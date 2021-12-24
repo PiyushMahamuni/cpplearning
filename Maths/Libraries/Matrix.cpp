@@ -1,166 +1,406 @@
 #include "Matrix.hpp"
 
-// CLASS ROW
-template <unsigned int n, unsigned int m>
-Math::Row<n, m>::Row(Matrix<n, m>* const matrix, const unsigned int& row):
-    matrix{matrix}, row{row}, transposed{matrix->transposed}{
-
-}
-
-// destructor
-template <unsigned int n, unsigned int m>
-Math::Row<n, m>::~Row(){
-    delete matrix;
-}
-
-template <unsigned int n, unsigned int m>
-float& Math::Row<n, m>::operator[](const unsigned int& ind){
-    if(transposed? ind > n : ind > m)
-        throw Math::OutOfBoundsIndexEXCEPTION();
-    else if (ind == 0)
-        throw Math::ZeroIndexEXCEPTION();
-    return (transposed ? matrix->matrix[ind-1][row-1]: matrix->matrix[row-1][ind-1]);
-}
-
-template<unsigned int n, unsigned int m>
-const float& Math::Row<n, m>::at(const unsigned int& ind)const{
-    if(transposed ? ind > n : ind > m)
-        throw Math::OutOfBoundsIndexEXCEPTION();
-    else if (ind == 0)
-        throw Math::ZeroIndexEXCEPTION();
-    return (transposed ? matrix->matrix[ind-1][row-1] : matrix->matrix[row-1][ind-1]);
-}
-
-template <unsigned int n, unsigned int m>
-Math::Row<n, m>& Math::Row<n, m>::operator=(const Math::Row<n, m>& rhs){
-    if(transposed == rhs.transposed && matrix==rhs.matrix)
-        return *this;
-    if(matrix==rhs.matrix && n!=m){
-        throw Math::IncampatibleMatrixEXCEPTION();
-    }
-    else{
-        for(unsigned int i{1}; i<=n; i++){
-            this->operator[](i) = rhs.at(i);
-        }
-    }
-    return *this;
-}
-
-template <unsigned int n, unsigned int m>
-Math::Row<n, m> Math::Row<n, m>::operator*(const float& rhs) const{
-    if(transposed){
-        Math::Row<1, n> new_row{new Math::Matrix<1, n>{}, 1};
-
-    }
-}
-
-template <unsigned int n, unsigned int m>
-void Math::Row<n, m>::print(std::ostream& os)const{
-    os << "[ ";
-    const unsigned int row_{row-1};
-    if(transposed){
-        const unsigned int temp {n-1};
-        for(unsigned int i{}; i<n; i++)
-            os << matrix->matrix[i][row_] << ((i==temp)? " ]": ", ");
-    }
-    else{
-        const unsigned int temp {m-1};
-        for(unsigned int i{}; i<m; i++)
-            os << matrix->matrix[row_][i] << ((i==temp) ? " ]": ", ");
-    }
-    return;
-}
-
-
-
-// ------------
 // CLASS MATRIX
 
-template <unsigned int n, unsigned int m>
-Math::Matrix<n, m>::Matrix() :
-    undef{false}, transposed{false}{
+// creates new matrix - primary creation
+Math::Matrix::Matrix(const unsigned int &rows, const unsigned int &columns) : undef{false}, transposed{false}, rows{rows}, columns{columns},
+                                                                              row1{0}, row2{rows}, col1{0}, col2{columns}, matrix{new float[rows * columns]{}}
+{
 }
 
-template <unsigned int n, unsigned int m>
-Math::Matrix<n, m>::Matrix(const Matrix<n, m>& source) :
-    undef{source.undef}, transposed{source.transposed}, rows{source.rows}, columns{source.columns}{
-    if(!undef)
-    for(unsigned int i{}; i<rows; i++){
-        for(unsigned int j{}; j<columns; j++)
-            matrix[i][j] = source.matrix[i][j];
+// creates a 1*1 matrix - primary creation
+Math::Matrix::Matrix(const float &scalar) : undef{false}, transposed{false}, rows{1},
+                                            columns{1}, row1{0}, row2{1}, col1{0}, col2{1},
+                                            matrix{new float}
+{
+    *matrix = scalar;
+}
+
+// creates new matrix - secondary creation
+Math::Matrix::Matrix(const Matrix &source) : undef{source.undef}, transposed{source.transposed},
+                                             rows{source.row2 - source.row1},
+                                             columns{source.col2 - source.col1}, row1{0}, row2{rows},
+                                             col1{0}, col2{columns},
+                                             matrix{(undef) ? nullptr : new float[rows * columns]}
+{
+    if (!undef)
+    {
+        for (unsigned int i{}; i < rows; i++)
+        {
+            for (unsigned int j{}; j < columns; j++)
+                matrix[i * columns + j] = source.matrix[(source.row1 + i) * source.columns + source.col1 + j];
+        }
     }
 }
 
-template <unsigned int n, unsigned int m>
-Math::Matrix<n, m>::Matrix(Matrix<n, m>&& source) :
-    undef{source.undef}, transposed{source.transposed}, rows{n}, columns{m}, matrix{std::move(source.matrix)}{
-}
-
-//todo: rectify. this is wrong implementation
-template <unsigned int n, unsigned int m>
-template <unsigned int a, unsigned int b>
-Math::Matrix<n, m>::Matrix(const Row<a, b>& source) :
-    undef{source.matrix->undef}, transposed{source.matrix->transposed}, rows{n}, columns{m}{
-    if(transposed){
-        // 
+// creates a submatrix. the pointer matrix is inherited as is from source object while the limiting values of rows and
+// columns are passed as arguments or could create a new matrix as well based on default bool para, sub_matrix
+Math::Matrix::Matrix(const Matrix &source, const unsigned int &row1, const unsigned int &row2, const unsigned int &col1, const unsigned int &col2, bool sub_matrix) : undef{source.undef || (row2 - row1 == source.rows && col2 - col1 == source.rows)}, transposed{source.transposed},
+                                                                                                                                                                      rows{sub_matrix ? source.rows : row2 - row1}, columns{sub_matrix ? source.columns : col2 - col1},
+                                                                                                                                                                      row1{sub_matrix ? row1 : 0}, row2{sub_matrix ? row2 : rows}, col1{sub_matrix ? col1 : 0}, col2{sub_matrix ? col2 : columns},
+                                                                                                                                                                      matrix{sub_matrix ? source.matrix : (undef ? nullptr : new float[rows * columns])}
+{
+    if (!source.undef && undef)
+    {
+        throw Math::SubMatrixIsMatrixEXCEPTION();
     }
-    for(unsigned int i{}; i<n; i++)
-        for(unsigned int j{}; j<m; j++)
-            matrix[i][j] = source.at(i * n +j);
+    if (!sub_matrix && !undef)
+    {
+        for (unsigned int i{}; i < rows; i++)
+        {
+            for (unsigned int j{}; j < columns; j++)
+                matrix[i * columns + j] = source.matrix[(source.row1 + i) * source.columns + source.col1 + j];
+        }
+    }
 }
 
-template <unsigned int n, unsigned int m>
-Math::Matrix<n, m>::Matrix(Row<n, m>&& source) :
-    undef{source.matrix->undef}, transposed{source.matrix->transposed}, rows{n}, columns{m},
-    matrix{std::move(source.matrix->matrix)}{
+Math::Matrix::Matrix(Matrix &&source) : undef{source.undef}, transposed{source.transposed}, rows{source.rows}, columns{source.columns},
+                                        row1{source.row1}, row2{source.row2}, col1{source.col1}, col2{source.col2}, matrix{source.matrix}
+{
+    source.matrix = nullptr;
 }
 
-template <unsigned int n, unsigned int m>
-Math::Matrix<n, m>& Math::Matrix<n, m>::inplace_transpose(){
+Math::Matrix::~Matrix()
+{
+    if (row2 - row1 == rows && col2 - col1 == columns) // means this was the Matrix object that allocated this memory
+        delete matrix;
+}
+
+Math::Matrix &Math::Matrix::inplace_transpose()
+{
     transposed = !transposed;
+    unsigned int temp{row1};
+    row1 = col1;
+    col1 = temp;
+    temp = row2;
+    row2 = col2;
+    col2 = temp;
     return *this;
 }
 
-template <unsigned int n, unsigned int m>
-Math::Row<n, m> Math::Matrix<n, m>::operator[](const unsigned int& row){
-    if (row == 0)
-        throw Math::ZeroIndexEXCEPTION();
-    else if (transposed ? row > columns : row > rows)
-        throw Math::OutOfBoundsIndexEXCEPTION();
-    return Row<n, m>{this, row};
+Math::Matrix Math::Matrix::transpose()const{
+    Math::Matrix obj{*this};
+    return obj.inplace_transpose();
 }
 
-template <unsigned int n, unsigned int m>
-const Math::Row<n, m> Math::Matrix<n, m>::at(const unsigned int& row)const{
-    if (row == 0)
+Math::Matrix Math::Matrix::operator[](unsigned int ind)
+{
+    if (ind == 0)
         throw Math::ZeroIndexEXCEPTION();
-    else if (transposed ? row > columns : row > rows)
+    else if (transposed ? ind > columns : ind > rows)
         throw Math::OutOfBoundsIndexEXCEPTION();
-    return Row<n, m>{(Matrix<n, m>*)this, row};
+    if (row1 == row2 - 1)
+    {
+        return Matrix{*this, row1, row2, ind - 1, ind, true};
+    }
+    if (col1 == col2 - 1)
+    {
+        return Matrix{*this, ind - 1, ind, col1, col2, true};
+    }
+    if (transposed)
+    {
+        ind += col1;
+        // creating a sub matrix
+        return Matrix{*this, row1, row2, ind - 1, ind, true}; // creating the sub matrix
+    }
+    else
+    {
+        ind += row1;
+        return Matrix{*this, ind - 1, ind, col1, col2, true};
+    }
 }
 
-template <unsigned int n, unsigned int m>
-void Math::Matrix<n, m>::print(std::ostream& os)const{
-    os << "\n[ ";
-    if(transposed){
-        for(unsigned int i{1}; i<=columns; i++){
-            this->at(i).print(os);
-            os  << ((i == columns) ? " ]": ",\n  ");
+const Math::Matrix Math::Matrix::at(unsigned int ind) const
+{
+    if (ind == 0)
+        throw Math::ZeroIndexEXCEPTION();
+    else if (transposed ? ind > columns : ind > rows)
+        throw Math::OutOfBoundsIndexEXCEPTION();
+    if (row1 == row2 - 1)
+    {
+        return Matrix{*this, row1, row2, ind - 1, ind};
+    }
+    if (col1 == col2 - 1)
+    {
+        return Matrix{*this, ind - 1, ind, col1, col2};
+    }
+    if (transposed)
+    {
+        ind += col1;
+        // creating a sub matrix
+        return Matrix{*this, row1, row2, ind - 1, ind}; // creating the sub matrix
+    }
+    else
+    {
+        ind += row1;
+        return Matrix{*this, ind - 1, ind, col1, col2};
+    }
+}
+
+bool Math::Matrix::operator==(const Matrix &rhs) const
+{
+    if (this == &rhs)
+        return true;
+    if (transposed == rhs.transposed)
+    {
+        if (col2 - col1 != rhs.col2 - rhs.col1 || row2 - row1 != rhs.row2 - rhs.row1)
+            return false;
+    }
+    else
+    {
+        if (col2 - col1 != rhs.row2 - rhs.row1 || row2 - row1 != rhs.col2 - rhs.col1)
+            return false;
+    }
+
+    if (matrix == rhs.matrix)
+    {
+        if (transposed == rhs.transposed)
+        {
+            if (row1 == rhs.row1 && row2 == rhs.row2 && col1 == rhs.col1 && col2 == rhs.col2)
+                return true;
+        }
+        else
+        {
+            if (row1 == rhs.col1 && row2 == rhs.col2 && col1 == rhs.row1 && col2 == rhs.row2)
+                return true;
         }
     }
-    else{
-        for(unsigned int i{1}; i<=rows; i++){
-            this->at(i).print(os);
-            os << ((i == rows) ? " ]": ",\n  ");
+    const unsigned int _rows_{row2 - row1};
+    const unsigned int _cols_{col2 - col1};
+    if (transposed == rhs.transposed)
+    {
+        if (transposed)
+            for (unsigned int i{}; i < _rows_; i++)
+                for (unsigned int j{}; j < _cols_; j++)
+                {
+                    if (matrix[(j + col1) * columns + row1 + j] != rhs.matrix[(j + rhs.col1) * rhs.columns + rhs.row1 + j])
+                        return false;
+                }
+        else
+            for (unsigned int i{0}; i < _rows_; i++)
+                for (unsigned int j{0}; j < _cols_; j++)
+                    if (matrix[(i + row1) * rows + col1 + j] != rhs.matrix[(i + rhs.row1) * rhs.rows + j + rhs.col1])
+                        return false;
+    }
+    else
+    {
+        if (transposed)
+            for (unsigned int i{}; i < _rows_; i++)
+                for (unsigned int j{}; j < _cols_; j++)
+                {
+                    if (matrix[(j + col1) * columns + row1 + j] != rhs.matrix[(i + row1) * columns + col1 + j])
+                        return false;
+                }
+        else
+            for (unsigned int i{}; i < _rows_; i++)
+                for (unsigned int j{}; j < _cols_; j++)
+                    if (matrix[(i + row1) * columns + col1 + j] != rhs.matrix[(j + col1) * columns + row1 + i])
+                        return false;
+    }
+    return true;
+}
+
+Math::Matrix &Math::Matrix::operator=(const Matrix &rhs)
+{
+    if (*this == rhs)
+        return *this;
+    if (rhs.undef)
+        throw Math::UndefinedMatrixEXCEPTION();
+    // check if *this and rhs have compatible sizes
+    if (row2 - row1 != rhs.row2 - rhs.row1 || col2 - col1 != rhs.col2 - rhs.col1)
+        throw Math::IncampatibleMatrixEXCEPTION();
+    else
+    {
+        const unsigned int _rows_{row2 - row1};
+        const unsigned int _cols_{col2 - col1};
+        if (transposed == rhs.transposed)
+            if (transposed)
+                for (unsigned int i{}; i < _rows_; i++)
+                    for (unsigned int j{}; j < _cols_; j++)
+                        matrix[(j + col1) * columns + row1 + i] = rhs.matrix[(j + rhs.col1) * rhs.columns + rhs.row1 + i];
+            else
+                for (unsigned int i{}; i < _rows_; i++)
+                    for (unsigned int j{}; j < _cols_; j++)
+                        matrix[(i + row1) * columns + col1 + j] = rhs.matrix[(i + rhs.row1) * rhs.columns + rhs.col1 + j];
+        else
+        {
+            if (transposed)
+                for (unsigned int i{}; i < _rows_; i++)
+                    for (unsigned int j{}; j < _cols_; j++)
+                        matrix[(j + col1) * columns + row1 + i] = rhs.matrix[(i + rhs.row1) * rhs.columns + rhs.col1 + j];
+            else
+                for (unsigned int i{}; i < _rows_; i++)
+                    for (unsigned int j{}; j < _cols_; j++)
+                        matrix[(i + row1) * columns + col1 + j] = rhs.matrix[(j + rhs.col1) * rhs.columns + rhs.row1 + i];
         }
+    }
+    return *this;
+}
+
+Math::Matrix &Math::Matrix::operator=(const float &scalar)
+{
+    // check if the matrix is already a scalar
+    if (row2 - row1 == 1 && col2 - col1 == 1)
+    {
+        matrix[row1 * rows + col1] = scalar;
+    }
+    else
+    {
+        throw Math::NotScalarMatrixEXCEPTION();
+    }
+    return *this;
+}
+
+Math::Matrix Math::Matrix::operator*(const float &scalar) const
+{
+    const unsigned int _rows_{row2 - row1};
+    const unsigned int _cols_{col2 - col1};
+    Math::Matrix obj{_rows_, _cols_};
+    if (transposed)
+        for (unsigned int i{}; i < _rows_; i++)
+            for (unsigned int j{}; j < _cols_; j++)
+                obj.matrix[i * _cols_ + j] = scalar * matrix[(j + col1) * columns + row1 + j];
+    else
+        for (unsigned int i{}; i < _rows_; i++)
+            for (unsigned int j{}; j < _cols_; j++)
+                obj.matrix[i * _cols_ + j] = scalar * matrix[(i + row1) * columns + col1 + j];
+    return obj;
+}
+
+Math::Matrix& Math::Matrix::operator*=(const float& scalar){
+    const unsigned int _rows_ {row2-row1};
+    const unsigned int _cols_ {col2-col1};
+    if(transposed)
+        for(unsigned int i{}; i<_rows_; i++)
+            for(unsigned int j{}; j<_cols_; j++)
+                matrix[(j + col1) * columns + row1 + i] *= 2;
+    else
+        for(unsigned int i{}; i<_rows_; i++)
+            for(unsigned int j{}; j<_cols_; j++)
+                matrix[(i + row1) * columns + col1 + j] *= 2;
+    return *this;
+}
+
+// unfinished
+Math::Matrix Math::Matrix::operator*(const Matrix& rhs) const{
+    if(undef || rhs.undef)
+        throw Math::UndefinedMatrixEXCEPTION();
+    // check if this is a scalar matrix
+    if(row2 - row1 == 1 && col2 - col1 == 1)
+        return rhs * matrix[row1 * columns + col1];
+    // check if rhs is a scalar matrix
+    if(rhs.row2 - rhs.row1 == 1 &&  rhs.col2 - rhs.col1 == 1)
+        return (*this) * rhs.matrix[rhs.row1 * rhs.columns + rhs.col1];
+    // check if *this and rhs have compatible sizes
+    if(col2 - col1 != rhs.row2 - rhs.row2)
+        throw Math::IncampatibleMatrixEXCEPTION();
+    Math::Matrix product{row2-row1, rhs.col2-rhs.col1};
+    
+}
+
+
+Math::Matrix Math::Matrix::operator+(const Matrix &rhs) const
+{
+    // check if *this and rhs have compatible sizes
+    if (row2 - row1 != rhs.row2 - rhs.row1 || col2 - col1 != rhs.col2 - rhs.col1)
+        throw Math::IncampatibleMatrixEXCEPTION();
+    Math::Matrix obj{*this}; // copy of this object
+    if (transposed == rhs.transposed)
+    {
+        if (transposed)
+            for (unsigned int i{}; i < obj.rows; i++)
+                for (unsigned int j{}; j < obj.columns; j++)
+                    obj.matrix[j * obj.columns + i] += rhs.matrix[(j + rhs.col1) * rhs.columns + rhs.row1 + i];
+        else
+            for (unsigned int i{}; i < obj.rows; i++)
+                for (unsigned int j{}; j < obj.columns; j++)
+                    obj.matrix[i * obj.columns + j] += rhs.matrix[(i + rhs.row1) * rhs.columns + rhs.col1 + j];
+    }
+    else
+    {
+        if (transposed)
+            for (unsigned int i{}; i < obj.rows; i++)
+                for (unsigned int j{}; j < obj.columns; j++)
+                    obj.matrix[j * obj.columns + i] += rhs.matrix[(i + rhs.row1) * rhs.columns + rhs.col1 + j];
+        else
+            for (unsigned int i{}; i < obj.rows; i++)
+                for (unsigned int j{}; j < obj.columns; j++)
+                    obj.matrix[i * obj.columns + j] += rhs.matrix[(j + rhs.col1) * rhs.columns + rhs.row1 + i];
+    }
+    return obj;
+}
+
+Math::Matrix& Math::Matrix::operator+=(const Matrix& rhs){
+    const unsigned int _rows_ {row2-row1};
+    const unsigned int _cols_ {col2-col1};
+    if(transposed == rhs.transposed){
+        if(transposed)
+            for(unsigned int i{}; i<_rows_; i++)
+                for(unsigned int j{}; j<_cols_; j++)
+                    matrix[(j + col1) * columns + row1 + j] += rhs.matrix[(j + rhs.col1) * rhs.columns + rhs.row1 + i];
+        else
+            for(unsigned int i{}; i<_rows_; i++)
+                for(unsigned int j{}; j<_cols_; j++)
+                    matrix[(i + row1) * columns + col1 + j] += rhs.matrix[(i + rhs.row1) * rhs.columns + rhs.col1 + j];
+
+    }
+    else{
+        if(transposed)
+            for(unsigned int i{}; i<_rows_; i++)
+                for(unsigned int j{}; j<_cols_; j++)
+                    matrix[(j + col1) * columns + row1 + j] += matrix[(i + rhs.row1) * rhs.columns + rhs.col1 + j];
+        else
+            for(unsigned int i{}; i<_rows_; i++)
+                for(unsigned int j{}; j<_cols_; j++)
+                    matrix[(i + row1) * columns + col1 + j] += matrix[(j + rhs.col1) * rhs.columns + rhs.row1 + i];
+    }
+    return *this;
+}
+
+void Math::Matrix::print(std::ostream &os) const
+{
+    // check if this is a vector or a scalar at this point
+    if (row1 == row2 - 1)
+    {
+        if (col1 == col2 - 1)
+        { // at an element
+            os << matrix[row1 * columns + col1];
+            return;
+        }
+        // at the row vector
+        os << "[ ";
+        const unsigned int last_col{col2 - 1};
+        for (unsigned int i{col1}; i < col2; i++)
+        {
+            os << matrix[row1 * columns + i] << ((i == last_col) ? " ]" : (transposed) ? ",\n  "
+                                                                                       : ", ");
+        }
+        return;
+    }
+    else if (col1 == col2 - 1)
+    {
+        os << "[ ";
+        const unsigned int last_row{row2 - 1};
+        for (unsigned int i{row1}; i < row2; i++)
+        {
+            os << matrix[col1 + i * columns] << ((i == last_row) ? " ]" : (transposed) ? ", "
+                                                                                       : ",\n  ");
+        }
+        return;
+    }
+
+    os << "\n{ ";
+    const unsigned int _rows_{row2 - row1};
+    for (unsigned int i{1}; i <= _rows_; i++)
+    {
+        ((Matrix *)this)->operator[](i).print(os);
+        os << ((i == _rows_) ? " }" : ",\n  ");
     }
     return;
 }
 
-
-
-
-// int main(int argc, char** argv){
-//     Math::Matrix<3u, 3u> R;
-//     std::cout << R ;
-// }
+std::ostream &operator<<(std::ostream &os, const Math::Matrix &matrix)
+{
+    matrix.print(os);
+    return os;
+}

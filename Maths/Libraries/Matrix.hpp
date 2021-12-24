@@ -4,84 +4,97 @@
 #include <iostream>
 #include <exception>
 
-namespace Math{
-    
+namespace Math
+{
+
     // CLASS ROW
-    template <unsigned int n, unsigned int m>
-    class Row;
+    class Matrix;
 
     // CLASS MATRIX
-    template <unsigned int n, unsigned int m>
-    class Matrix{
+    class Matrix
+    {
     private:
         bool undef;
         bool transposed;
-        float matrix[n][m]{};
-        const unsigned int rows{n};
-        const unsigned int columns{m};
-    
+        unsigned int rows;
+        unsigned int columns;
+        unsigned int row1;
+        unsigned int row2;
+        unsigned int col1;
+        unsigned int col2;
+        float *matrix;
+
     public:
-        Matrix();
-        Matrix(const Matrix& source);
-        Matrix(Matrix&& source);
-        template<unsigned int a, unsigned int b>
-        Matrix(const Row<a, b>& source);
-        Matrix(Row<n, m>&& source);
-        Row<n, m> operator[](const unsigned int& row);
-        const Row<n, m> at(const unsigned int& row)const;
-        void print(std::ostream& os = std::cout)const;
-        Matrix<n, m>& inplace_transpose();
-    
-    friend class Row<n, m>;
+        Matrix(const unsigned int &rows, const unsigned int &columns);
+        Matrix(const float &scalar);
+        Matrix(const Matrix &source);
+        Matrix(const Matrix &source, const unsigned int &row1, const unsigned int &row2, const unsigned int &col1, const unsigned int &col2, bool sub_matrix = false);
+        Matrix(Matrix &&source);
+        Matrix operator[](unsigned int ind);
+        const Matrix at(unsigned int ind) const;
+        bool operator==(const Matrix &rhs) const;
+        Matrix &operator=(const Matrix &rhs);
+        Matrix &operator=(const float &scalar);
+        Matrix operator*(const float &scalar)const;
+        Matrix operator*(const Matrix& rhs)const;
+        Matrix &operator*=(const float &scalar);
+        Matrix operator+(const Matrix &rhs)const;
+        Matrix& operator+=(const Matrix& rhs);
+        void print(std::ostream &os = std::cout) const;
+        Matrix &inplace_transpose();
+        Matrix transpose()const;
+
+        // Destructor
+        ~Matrix();
     };
-
-    template <unsigned int n, unsigned int m>
-    std::ostream& operator<<(std::ostream& os, const Math::Matrix<n, m>& matrix){
-        matrix.print(os);
-        return os;
-    }
-
-    // CLASS ROW
-    template <unsigned int n, unsigned int m>
-    class Row{
-    private:
-        Matrix<n, m>* matrix;
-        const unsigned int row;
-        const bool transposed;
-    public:
-        Row(Matrix<n, m>* const matrix, const unsigned int& row);
-        float& operator[](const unsigned int& ind);
-        const float& at(const unsigned int& ind) const;
-        Row& operator=(const Row& rhs);
-        Row operator*(const float& rhs) const;
-        void print(std::ostream& os = std::cout) const;
-
-        ~Row();
-    };
-
-    template <unsigned int n, unsigned int m>
-    std::ostream& operator<<(std::ostream& os, const Math::Row<n, m>& row){
-        row.print(os);
-        return os;
-    }
 
     // EXCEPTIONS
-    class ZeroIndexEXCEPTION : public std::exception{
+    class ZeroIndexEXCEPTION : public std::exception
+    {
     public:
-        virtual const char* what(){
+        virtual const char *what()
+        {
             return "Matrix index starts from 1!";
         }
     };
-    class OutOfBoundsIndexEXCEPTION : public std::exception{
+    class OutOfBoundsIndexEXCEPTION : public std::exception
+    {
     public:
-        virtual const char* what(){
+        virtual const char *what()
+        {
             return "Matrix index is out of bounds!";
         }
     };
-    class IncampatibleMatrixEXCEPTION : public std::exception{
+    class IncampatibleMatrixEXCEPTION : public std::exception
+    {
     public:
-        virtual const char* what(){
-            return "Matrix sizes aren't the same!";
+        virtual const char *what()
+        {
+            return "Matrix sizes aren't compatible!";
+        }
+    };
+    class SubMatrixIsMatrixEXCEPTION : public std::exception
+    {
+    public:
+        virtual const char *what()
+        {
+            return "Submatrix trying to be created is the same as the Matrix it is being created from!";
+        }
+    };
+    class UndefinedMatrixEXCEPTION : public std::exception
+    {
+    public:
+        virtual const char *what()
+        {
+            return "One of the matrix from given expression is undefined!";
+        }
+    };
+    class NotScalarMatrixEXCEPTION : public std::exception
+    {
+    public:
+        virtual const char *what()
+        {
+            return "Assignment of a scalar is only permitted with 1x1 matrices!";
         }
     };
 };
