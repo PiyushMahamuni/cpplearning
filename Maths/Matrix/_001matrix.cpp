@@ -13,7 +13,7 @@ int main(int argc, char **argv)
     V = R[3].inplace_transpose();
     std::cout << R << std::endl;
     std::cout << V << std::endl;
-    Math::Matrix R2 {R * V};
+    Math::Matrix R2{R * V};
     std::cout << R2 << std::endl;
     std::cout << R.inplace_transpose() << std::endl;
     return 0;

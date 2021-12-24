@@ -57,15 +57,15 @@ Math::Matrix::Matrix(const Matrix &source, const unsigned int &row1,
     }
     if (!sub_matrix && !undef)
     {
-        const unsigned int _rows_ {row2 - row1};
-        const unsigned int _cols_ {col2 - col1};
-        if(transposed)
-            for(unsigned int i{}; i<_rows_; i++)
-                for(unsigned int j{}; j<_cols_; j++)
+        const unsigned int _rows_{row2 - row1};
+        const unsigned int _cols_{col2 - col1};
+        if (transposed)
+            for (unsigned int i{}; i < _rows_; i++)
+                for (unsigned int j{}; j < _cols_; j++)
                     matrix[(j + col1) * columns + row1 + i] = source.matrix[(j + source.col1) * source.columns + source.row1 + i];
         else
-            for(unsigned int i{}; i<_rows_; i++)
-                for(unsigned int j{}; j<_cols_; j++)
+            for (unsigned int i{}; i < _rows_; i++)
+                for (unsigned int j{}; j < _cols_; j++)
                     matrix[(i + row1) * columns + col1 + j] = source.matrix[(i + source.row1) * source.columns + source.col1 + j];
     }
 }
@@ -100,11 +100,13 @@ Math::Matrix Math::Matrix::transpose() const
     return obj.inplace_transpose();
 }
 
-Math::Matrix Math::Matrix::sub_mat(const unsigned int& r1, const unsigned int& r2, const unsigned int& c1, const unsigned int& c2){
+Math::Matrix Math::Matrix::sub_mat(const unsigned int &r1, const unsigned int &r2, const unsigned int &c1, const unsigned int &c2)
+{
     return Math::Matrix{*this, r1, r2, c1, c2, true};
 }
 
-Math::Matrix Math::Matrix::mat(const unsigned int& r1, const unsigned int& r2, const unsigned int& c1, const unsigned int& c2)const{
+Math::Matrix Math::Matrix::mat(const unsigned int &r1, const unsigned int &r2, const unsigned int &c1, const unsigned int &c2) const
+{
     return Math::Matrix{*this, r1, r2, c1, c2};
 }
 
@@ -303,13 +305,14 @@ Math::Matrix Math::Matrix::operator*(const Matrix &rhs) const
     Math::Matrix product{row2 - row1, rhs.col2 - rhs.col1};
     const unsigned int _cols_{col2 - col1};
     const unsigned int _rows_{row2 - row1};
-    if(product.columns == 1){
+    if (product.columns == 1)
+    {
         if (rhs.transposed)
             for (unsigned int j{}; j < _cols_; j++)
-                product += Math::Matrix{*this, 0, _rows_, j, j+1, true} * rhs.matrix[(j + rhs.col1) * rhs.columns + rhs.row1];
+                product += Math::Matrix{*this, 0, _rows_, j, j + 1, true} * rhs.matrix[(j + rhs.col1) * rhs.columns + rhs.row1];
         else
             for (unsigned int j{}; j < rhs.rows; j++)
-                product += Math::Matrix{*this, 0, _rows_, j, j+1, true} * rhs.matrix[rhs.row1 * rhs.columns + rhs.col1 + j];
+                product += Math::Matrix{*this, 0, _rows_, j, j + 1, true} * rhs.matrix[rhs.row1 * rhs.columns + rhs.col1 + j];
         return product;
     }
     if (rhs.transposed)
@@ -318,7 +321,7 @@ Math::Matrix Math::Matrix::operator*(const Matrix &rhs) const
         {
             Math::Matrix column{product, product.row1, product.row2, i, i + 1, true};
             for (unsigned int j{}; j < _cols_; j++)
-                column += Math::Matrix{*this, 0, _rows_, j, j+1, true} * rhs.matrix[(j + rhs.col1) * rhs.columns + rhs.row1 + i];
+                column += Math::Matrix{*this, 0, _rows_, j, j + 1, true} * rhs.matrix[(j + rhs.col1) * rhs.columns + rhs.row1 + i];
         }
     }
     else
@@ -327,7 +330,7 @@ Math::Matrix Math::Matrix::operator*(const Matrix &rhs) const
         {
             Math::Matrix column{product, product.row1, product.row2, i, i + 1, true};
             for (unsigned int j{}; j < rhs.rows; j++)
-                column += Math::Matrix{*this, 0, _rows_, j, j+1, true} * rhs.matrix[(i + rhs.row1) * rhs.columns + rhs.col1 + j];
+                column += Math::Matrix{*this, 0, _rows_, j, j + 1, true} * rhs.matrix[(i + rhs.row1) * rhs.columns + rhs.col1 + j];
         }
     }
     return product;
@@ -367,7 +370,7 @@ Math::Matrix Math::Matrix::operator+(const Matrix &rhs) const
 Math::Matrix &Math::Matrix::operator+=(const Matrix &rhs)
 {
     // check for compatibility
-    if(col2 - col1 != rhs.col2 - rhs.col1 || row2 - row1 != rhs.row2 - rhs.row1)
+    if (col2 - col1 != rhs.col2 - rhs.col1 || row2 - row1 != rhs.row2 - rhs.row1)
         throw Math::IncampatibleMatrixEXCEPTION();
     const unsigned int _rows_{row2 - row1};
     const unsigned int _cols_{col2 - col1};
@@ -403,7 +406,7 @@ void Math::Matrix::print(std::ostream &os) const
     {
         if (col1 == col2 - 1)
         { // at an element
-            if(transposed)
+            if (transposed)
                 os << matrix[col1 * columns + row1];
             else
                 os << matrix[row1 * columns + col1];
@@ -412,9 +415,9 @@ void Math::Matrix::print(std::ostream &os) const
         // at the row vector
         os << "[ ";
         const unsigned int last_col{col2 - 1};
-        if(transposed)
-            for(unsigned int i{col1}; i < col2; i++)
-                os << matrix[i * columns + row1] << ((i == last_col) ? " ]": ", ");
+        if (transposed)
+            for (unsigned int i{col1}; i < col2; i++)
+                os << matrix[i * columns + row1] << ((i == last_col) ? " ]" : ", ");
         else
             for (unsigned int i{col1}; i < col2; i++)
                 os << matrix[row1 * columns + i] << ((i == last_col) ? " ]" : ", ");
@@ -424,10 +427,10 @@ void Math::Matrix::print(std::ostream &os) const
     {
         os << "[ ";
         const unsigned int last_row{row2 - 1};
-        
-        if(transposed)
-            for(unsigned int i{row1}; i<row2; i++)
-                os << matrix[col1 * columns + i] << ((i == last_row) ? "]  ": ",\n  ");
+
+        if (transposed)
+            for (unsigned int i{row1}; i < row2; i++)
+                os << matrix[col1 * columns + i] << ((i == last_row) ? "]  " : ",\n  ");
         else
             for (unsigned int i{row1}; i < row2; i++)
                 os << matrix[i * columns + col1] << ((i == last_row) ? " ]" : ",\n  ");
