@@ -40,9 +40,21 @@ namespace Math
         Matrix &operator*=(const float &scalar);
         Matrix operator+(const Matrix &rhs)const;
         Matrix& operator+=(const Matrix& rhs);
+        
+        // prints this matrix on the passed std::ostream
         void print(std::ostream &os = std::cout) const;
+        
+        // transposes *this matrix and then returns it
         Matrix &inplace_transpose();
+        
+        // creates a new matrix which is transpose of *this and then returns it
         Matrix transpose()const;
+        
+        // creates a sub matrix and any changes to it are also reflected in *this object
+        Matrix sub_mat(const unsigned int& r1, const unsigned int& r2, const unsigned int& c1, const unsigned int& c2);
+        
+        // creates a sub matrix that is unrelated to *this matrix and changes in it aren't reflected back
+        Matrix mat(const unsigned int& r1, const unsigned int& r2, const unsigned int& c1, const unsigned int& c2)const;
 
         // Destructor
         ~Matrix();

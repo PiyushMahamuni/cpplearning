@@ -78,7 +78,7 @@ Math::Matrix::Matrix(Matrix &&source) : undef{source.undef}, transposed{source.t
 
 Math::Matrix::~Matrix()
 {
-    if (row2 - row1 == rows && col2 - col1 == columns) // means this was the Matrix object that allocated this memory
+    if (row2 - row1 == rows && col2 - col1 == columns && matrix) // means this was the Matrix object that allocated this memory
         delete matrix;
 }
 
@@ -98,6 +98,14 @@ Math::Matrix Math::Matrix::transpose() const
 {
     Math::Matrix obj{*this};
     return obj.inplace_transpose();
+}
+
+Math::Matrix Math::Matrix::sub_mat(const unsigned int& r1, const unsigned int& r2, const unsigned int& c1, const unsigned int& c2){
+    return Math::Matrix{*this, r1, r2, c1, c2, true};
+}
+
+Math::Matrix Math::Matrix::mat(const unsigned int& r1, const unsigned int& r2, const unsigned int& c1, const unsigned int& c2)const{
+    return Math::Matrix{*this, r1, r2, c1, c2};
 }
 
 Math::Matrix Math::Matrix::operator[](unsigned int ind)
@@ -279,7 +287,6 @@ Math::Matrix &Math::Matrix::operator*=(const float &scalar)
     return *this;
 }
 
-// unfinished
 Math::Matrix Math::Matrix::operator*(const Matrix &rhs) const
 {
     if (undef || rhs.undef)
@@ -291,18 +298,27 @@ Math::Matrix Math::Matrix::operator*(const Matrix &rhs) const
     if (rhs.row2 - rhs.row1 == 1 && rhs.col2 - rhs.col1 == 1)
         return (*this) * rhs.matrix[rhs.row1 * rhs.columns + rhs.col1];
     // check if *this and rhs have compatible sizes
-    if (col2 - col1 != rhs.row2 - rhs.row2)
+    if (col2 - col1 != rhs.row2 - rhs.row1)
         throw Math::IncampatibleMatrixEXCEPTION();
     Math::Matrix product{row2 - row1, rhs.col2 - rhs.col1};
     const unsigned int _cols_{col2 - col1};
     const unsigned int _rows_{row2 - row1};
+    if(product.columns == 1){
+        if (rhs.transposed)
+            for (unsigned int j{}; j < _cols_; j++)
+                product += Math::Matrix{*this, 0, _rows_, j, j+1, true} * rhs.matrix[(j + rhs.col1) * rhs.columns + rhs.row1];
+        else
+            for (unsigned int j{}; j < rhs.rows; j++)
+                product += Math::Matrix{*this, 0, _rows_, j, j+1, true} * rhs.matrix[rhs.row1 * rhs.columns + rhs.col1 + j];
+        return product;
+    }
     if (rhs.transposed)
     {
         for (unsigned int i{}; i < product.columns; i++)
         {
             Math::Matrix column{product, product.row1, product.row2, i, i + 1, true};
             for (unsigned int j{}; j < _cols_; j++)
-                column += Math::Matrix{*this, 0, _rows_, j, j+1, true} * rhs.matrix[(j + col1) * rhs.columns + rhs.row1 + i];
+                column += Math::Matrix{*this, 0, _rows_, j, j+1, true} * rhs.matrix[(j + rhs.col1) * rhs.columns + rhs.row1 + i];
         }
     }
     else
