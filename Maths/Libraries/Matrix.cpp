@@ -350,6 +350,9 @@ Math::Matrix Math::Matrix::operator+(const Matrix &rhs) const
 
 Math::Matrix &Math::Matrix::operator+=(const Matrix &rhs)
 {
+    // check for compatibility
+    if(col2 - col1 != rhs.col2 - rhs.col1 || row2 - row1 != rhs.row2 - rhs.row1)
+        throw Math::IncampatibleMatrixEXCEPTION();
     const unsigned int _rows_{row2 - row1};
     const unsigned int _cols_{col2 - col1};
     if (transposed == rhs.transposed)
