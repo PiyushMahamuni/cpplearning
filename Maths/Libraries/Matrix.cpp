@@ -41,7 +41,7 @@ Math::Matrix::Matrix(const Matrix &source)
 Math::Matrix::Matrix(const Matrix &source, const unsigned int &row1,
                      const unsigned int &row2, const unsigned int &col1,
                      const unsigned int &col2, bool sub_matrix)
-    : undef{source.undef || (row2 - row1 == source.rows && col2 - col1 == source.rows)},
+    : undef{source.undef || (row2 - row1 == source.rows && col2 - col1 == source.columns)},
       transposed{source.transposed},
       rows{sub_matrix ? source.rows : row2 - row1},
       columns{sub_matrix ? source.columns : col2 - col1},
