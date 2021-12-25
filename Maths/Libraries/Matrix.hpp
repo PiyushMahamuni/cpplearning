@@ -3,13 +3,10 @@
 
 #include <iostream>
 #include <exception>
+#include <math.h>
 
 namespace Math
 {
-
-    // CLASS ROW
-    class Matrix;
-
     // CLASS MATRIX
     class Matrix
     {
@@ -23,6 +20,7 @@ namespace Math
         unsigned int col1;
         unsigned int col2;
         float *matrix;
+        static float thresh;
 
     public:
         Matrix(const unsigned int &rows, const unsigned int &columns);
@@ -33,13 +31,24 @@ namespace Math
         Matrix operator[](unsigned int ind);
         const Matrix at(unsigned int ind) const;
         bool operator==(const Matrix &rhs) const;
+        bool operator!=(const Matrix &rhs) const;
+        // changes values of corresponding elements if this and rhs have compatible sizes
         Matrix &operator=(const Matrix &rhs);
+        // reassigns this matrix to a new one which may have different size
+        Matrix &reassign(const Matrix &source);
+        // reassign this matrix reference to the source object
+        Matrix &reassign(Matrix&& source);
+        // assigns value of scalar if this is an element matrix
         Matrix &operator=(const float &scalar);
         Matrix operator*(const float &scalar) const;
         Matrix operator*(const Matrix &rhs) const;
         Matrix &operator*=(const float &scalar);
+        Matrix &operator*=(const Matrix &rhs);
+        Matrix operator/(const float &scalar)const;    // unfinished
+        Matrix &operator/=(const float &scalar);  // unfinished
         Matrix operator+(const Matrix &rhs) const;
         Matrix &operator+=(const Matrix &rhs);
+        Matrix operator-() const;
 
         // prints this matrix on the passed std::ostream
         void print(std::ostream &os = std::cout) const;
@@ -56,9 +65,18 @@ namespace Math
         // creates a sub matrix that is unrelated to *this matrix and changes in it aren't reflected back
         Matrix mat(const unsigned int &r1, const unsigned int &r2, const unsigned int &c1, const unsigned int &c2) const;
 
+        // returns the norm if *this matrix is a vector
+        float norm() const;
+
+        // Creates a skew symmetric matrix from a 3x1 matrix
+        static Matrix J(const Matrix &v);
+
         // Destructor
         ~Matrix();
     };
+
+    // FUNCTIONS
+    float det(const Matrix& mat);
 
     // EXCEPTIONS
     class ZeroIndexEXCEPTION : public std::exception
@@ -77,12 +95,20 @@ namespace Math
             return "Matrix index is out of bounds!";
         }
     };
-    class IncampatibleMatrixEXCEPTION : public std::exception
+    class IncompatibleMatrixEXCEPTION : public std::exception
     {
     public:
         virtual const char *what()
         {
             return "Matrix sizes aren't compatible!";
+        }
+    };
+    class IncompatibleMatrixEXCEPTION2 : public std::exception
+    {
+    public:
+        virtual const char *what()
+        {
+            return "Matrix product of lhs matrix and rhs matrix aren't compatible with current size of lhs matrix!";
         }
     };
     class SubMatrixIsMatrixEXCEPTION : public std::exception
@@ -107,6 +133,22 @@ namespace Math
         virtual const char *what()
         {
             return "Assignment of a scalar is only permitted with 1x1 matrices!";
+        }
+    };
+    class Not1By3VectorEXCEPTION : public std::exception
+    {
+    public:
+        virtual const char *what()
+        {
+            return "The concerned matrix is not a vector in R^3!";
+        }
+    };
+    class NotVectorEXCEPTION : public std::exception
+    {
+    public:
+        virtual const char *what()
+        {
+            return "The concerned matrix is not 1 dimensional, aka vector!";
         }
     };
 };
