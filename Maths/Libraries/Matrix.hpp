@@ -37,15 +37,15 @@ namespace Math
         // reassigns this matrix to a new one which may have different size
         Matrix &reassign(const Matrix &source);
         // reassign this matrix reference to the source object
-        Matrix &reassign(Matrix&& source);
+        Matrix &reassign(Matrix &&source);
         // assigns value of scalar if this is an element matrix
         Matrix &operator=(const float &scalar);
         Matrix operator*(const float &scalar) const;
         Matrix operator*(const Matrix &rhs) const;
         Matrix &operator*=(const float &scalar);
         Matrix &operator*=(const Matrix &rhs);
-        Matrix operator/(const float &scalar)const;    // unfinished
-        Matrix &operator/=(const float &scalar);  // unfinished
+        Matrix operator/(const float &scalar) const; // unfinished
+        Matrix &operator/=(const float &scalar);     // unfinished
         Matrix operator+(const Matrix &rhs) const;
         Matrix &operator+=(const Matrix &rhs);
         Matrix operator-() const;
@@ -68,17 +68,23 @@ namespace Math
         // returns the norm if *this matrix is a vector
         float norm() const;
 
+        // Returns the size of the current matrix as 1x2 matrix first element - rows, second element - columns
+        const Matrix size() const;
+
         // Creates a skew symmetric matrix from a 3x1 matrix
         static Matrix J(const Matrix &v);
         // Computes the determenant of the matrix passed
-        static float det(const Matrix& mat);
+        static float det(const Matrix &mat);
+        // Compute corss product of 2 3x1 matrix
+        static Matrix cross(const Matrix &a, const Matrix &b);
+        // Computes dot product of two same sized matrix
+        static float dot(const Matrix &a, const Matrix &b);
 
         // Destructor
         ~Matrix();
     };
 
     // FUNCTIONS
-    
 
     // EXCEPTIONS
     class ZeroIndexEXCEPTION : public std::exception

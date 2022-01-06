@@ -1,0 +1,5 @@
+namespace Math{
+    class Quaternion{
+        
+    };
+};

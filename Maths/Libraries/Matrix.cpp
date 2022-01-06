@@ -110,18 +110,28 @@ Math::Matrix Math::Matrix::mat(const unsigned int &r1, const unsigned int &r2, c
     return Math::Matrix{*this, r1, r2, c1, c2};
 }
 
+const Math::Matrix Math::Matrix::size() const
+{
+    Math::Matrix size{1, 2};
+    size[1] = row2 - row1;
+    size[2] = col2 - col1;
+    return size;
+}
+
 Math::Matrix Math::Matrix::operator[](unsigned int ind)
 {
     if (ind == 0)
         throw Math::ZeroIndexEXCEPTION();
-    else if (transposed ? ind > columns : ind > rows)
-        throw Math::OutOfBoundsIndexEXCEPTION();
     if (row1 == row2 - 1)
     {
+        if (ind > col2 - col1)
+            throw Math::OutOfBoundsIndexEXCEPTION();
         return Math::Matrix{*this, 0, 1, ind - 1, ind, true};
     }
     if (col1 == col2 - 1)
     {
+        if (ind > row2 - row1)
+            throw Math::OutOfBoundsIndexEXCEPTION();
         return Math::Matrix{*this, ind - 1, ind, 0, 1, true};
     }
     return Matrix{*this, ind - 1, ind, col1, col2, true};
@@ -605,4 +615,63 @@ Math::Matrix Math::Matrix::J(const Matrix &v)
         Jofv.matrix[5] = -(Jofv.matrix[7] = v.matrix[v.row1 * v.columns + v.col1]);
     }
     return Jofv;
+}
+
+Math::Matrix Math::Matrix::cross(const Matrix &a, const Matrix &b)
+{
+    return Math::Matrix::J(a) * b;
+}
+
+float Math::Matrix::dot(const Matrix &a, const Matrix &b)
+{
+
+    if (a.size() != b.size())
+        throw Math::IncompatibleMatrixEXCEPTION();
+    const unsigned int rows{a.row2 - a.row1}, cols{a.col2 - a.col1};
+    if (rows != 1 && cols != 1)
+        throw Math::NotVectorEXCEPTION();
+    float product{0};
+    if (rows == 1)
+    {
+        if (a.transposed == b.transposed)
+        {
+            if (a.transposed)
+                for (unsigned int i{}; i < cols; i++)
+                    product += a.matrix[(a.col1 + i) * a.columns + a.row1] * b.matrix[(b.col1 + i) * b.columns + b.row1];
+            else
+                for (unsigned int i{}; i < cols; i++)
+                    product += a.matrix[a.row1 * a.columns + a.col1 + i] * b.matrix[b.row1 * b.columns + b.col1 + i];
+        }
+        else
+        {
+            if (a.transposed)
+                for (unsigned int i{}; i < cols; i++)
+                    product += a.matrix[(a.col1 + i) * a.columns + a.row1] * b.matrix[b.row1 * b.columns + b.col1 + i];
+            else
+                for (unsigned int i{}; i < cols; i++)
+                    product += a.matrix[a.row1 * a.columns + a.col1 + i] * b.matrix[(b.col1 + i) * b.columns + b.row1];
+        }
+    }
+    else
+    {
+        if (a.transposed == b.transposed)
+        {
+            if (a.transposed)
+                for (unsigned int i{}; i < rows; i++)
+                    product += a.matrix[a.col1 * a.columns + a.row1 + i] * b.matrix[b.col1 * b.columns + b.row1 + i];
+            else
+                for (unsigned int i{}; i < rows; i++)
+                    product += a.matrix[(a.row1 + i) * a.columns + a.col1] * b.matrix[(b.row1 + i) * b.columns + b.col1];
+        }
+        else
+        {
+            if (a.transposed)
+                for (unsigned int i{}; i < rows; i++)
+                    product += a.matrix[a.col1 * a.columns + a.row1 + i] * b.matrix[(b.row1 + i) * b.columns + b.col1];
+            else
+                for (unsigned int i{}; i < rows; i++)
+                    product += a.matrix[(a.row1 + i) * a.columns + a.col1] * b.matrix[b.col1 * b.columns + b.row1 + i];
+        }
+    }
+    return product;
 }
