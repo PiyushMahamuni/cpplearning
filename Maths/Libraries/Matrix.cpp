@@ -150,29 +150,14 @@ bool Math::Matrix::operator==(const Matrix &rhs) const
 {
     if (this == &rhs)
         return true;
-    if (transposed == rhs.transposed)
-    {
-        if (col2 - col1 != rhs.col2 - rhs.col1 || row2 - row1 != rhs.row2 - rhs.row1)
-            return false;
-    }
-    else
-    {
-        if (col2 - col1 != rhs.row2 - rhs.row1 || row2 - row1 != rhs.col2 - rhs.col1)
-            return false;
-    }
-
+    if (col2 - col1 != rhs.col2 - rhs.col1 || row2 - row1 != rhs.row2 - rhs.row1)
+        return false;
     if (matrix == rhs.matrix)
     {
-        if (transposed == rhs.transposed)
-        {
-            if (row1 == rhs.row1 && row2 == rhs.row2 && col1 == rhs.col1 && col2 == rhs.col2)
-                return true;
-        }
+        if (row1 == rhs.row1 && row2 == rhs.row2 && col1 == rhs.col1 && col2 == rhs.col2)
+            return true;
         else
-        {
-            if (row1 == rhs.col1 && row2 == rhs.col2 && col1 == rhs.row1 && col2 == rhs.row2)
-                return true;
-        }
+            return false;
     }
     const unsigned int _rows_{row2 - row1};
     const unsigned int _cols_{col2 - col1};

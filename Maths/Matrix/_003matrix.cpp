@@ -5,14 +5,14 @@
 
 int main(int argc, char **argv){
     Math::Matrix w{3, 1};
-    w[1] = 2;
-    w[2] = 2;
-    w[3] = 3;
+    w[1] = 1;
+    w[2] = 1;
+    w[3] = 1;
     w = w / w.norm();
     Math::Matrix Jofw1 {Math::Matrix::J(w)};
     Math::Matrix Jofw2 {Jofw1};
 
-    for(unsigned int i{}; i<8; i++){
+    for(unsigned int i{}; i<32; i++){
         std::cout << Jofw1 << "\n---------\n"
                   << (Jofw1 == Jofw2) << "\n---------\n";
         Jofw1 *= Jofw2;

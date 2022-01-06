@@ -70,13 +70,15 @@ namespace Math
 
         // Creates a skew symmetric matrix from a 3x1 matrix
         static Matrix J(const Matrix &v);
+        // Computes the determenant of the matrix passed
+        static float det(const Matrix& mat);
 
         // Destructor
         ~Matrix();
     };
 
     // FUNCTIONS
-    float det(const Matrix& mat);
+    
 
     // EXCEPTIONS
     class ZeroIndexEXCEPTION : public std::exception
@@ -149,6 +151,14 @@ namespace Math
         virtual const char *what()
         {
             return "The concerned matrix is not 1 dimensional, aka vector!";
+        }
+    };
+    class NotSquareMatrixEXCEPTION : public std::exception
+    {
+    public:
+        virtual const char *what()
+        {
+            return "Cannot compute determinant of non square matrix!";
         }
     };
 };
