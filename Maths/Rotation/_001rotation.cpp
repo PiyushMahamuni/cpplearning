@@ -1,7 +1,7 @@
-#include "../Libraries/Rotation.cpp"
+#include "../Libraries/Rotation.hpp"
 
 int main(){
-    float theta {2 * pi / 3}; // 120 degrees
+    float theta {-2 * pi / 3}; // 120 degrees
     Matrix vec {3, 1};
     vec[1] = vec[2] = vec[3] = theta/sqrt(3);
     Matrix R {matrixFromVector(vec)};

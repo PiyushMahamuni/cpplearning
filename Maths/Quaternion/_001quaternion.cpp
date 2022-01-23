@@ -1,4 +1,4 @@
-#include "../Libraries/Quaternion.cpp"
+#include "../Libraries/Quaternion.hpp"
 #include <math.h>
 
 int main()
