@@ -16,8 +16,6 @@ int reverse(int &b){
     }
     if(b){
         if(res < -limit || res > limit) return 0;
-        if(res == -limit && b < -8) return 0;
-        if(res == limit && b > 7) return 0;
         return res * 10 + b;
     }
     return res;
