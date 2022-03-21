@@ -1,15 +1,24 @@
 // https://leetcode.com/problems/maximum-subarray/
 #include <iostream>
 #include <vector>
+#include <climits>
 
 int maxSubArray(std::vector<int>& nums){
-    std::vector<int> sums;
-    int sum, sum2{};
-    for(size_t start{}; start<nums.size(); start++){
-        sum = 0;
-        for(size_t end{start}; end<nums.size(); end++){
-            sums[end] = sum += nums[end] - sum2;
-        }
-        sum2 += nums[start];
+    int sum{}, max {INT_MIN};
+    for(const int& val: nums){
+        sum += val;
+        max = (max > sum) ? max : sum;
+        sum = (sum > 0) ? sum : 0;
     }
+    return sum;
+}
+
+
+int main(){
+    std::vector<int> vec;
+    int temp;
+    while(std::cin >> temp)
+        vec.push_back(temp);
+    std::cout << maxSubArray(vec) << '\n';
+    return 0;
 }
