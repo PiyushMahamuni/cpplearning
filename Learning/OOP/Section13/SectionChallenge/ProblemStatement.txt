@@ -1,0 +1,29 @@
+Section 13 Challenge
+=============================================================================
+
+For this challenge you are to develop foundation for a program for movie fanatics that keeps track
+of what movies they have watched and how many times they have watched each movie.
+
+The program must support following -
+class Movie -  models a movie which includes- 
+- Movie Name
+- Movie Rating (G, PG, PG-13, R)
+- wathced - the number of times the movie has been watched.
+
+class Movies -  models a collection of movie objects
+
+Obviously, Movies need to know about Movie since it's a collection of Movie objects
+However, our main driver should only interact with the Movies class.
+
+For example, a simple main should be able to-
+- create Movies object
+- ask the Movies object to add a movie by providing the movie name, rating, and watched count
+- ask the Movies object to increment the watched count by 1 for a movie given its name.
+- ask the Movies object to display all of its movies.
+
+Aditionally,
+- if we try to add a movie whose name is already in the movie collection we should display this
+  error to the user.
+- if we try to increment the watched count for a movie whose name is not the movies collection
+  we should display this user to the user.
+  

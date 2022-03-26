@@ -1,0 +1,436 @@
+WHAT IS A POINTER -
+    - A variable
+        - whose value is an address
+    - What can be at that address
+        - another variable
+        - a function
+    - Pointers point to a variable or function
+    - To use the data that the pointer is pointing to, you must know
+      its type.
+    - Pointers are variables so they can change.
+    - Pointers can be null.
+    - Pointers can be uninitialized.
+-------------------------------------------------------------------------------
+
+USES - 
+    - Passing by ref (kind of)
+    - Pointers can be used to operate on arrays very efficiently.
+    - We can allocate memory dynamically on the heap/free store.
+        - This memory doesn't even have a memory name.
+        - The only way to get to it is via a pointer.
+    - "With Object Oriented Pointers" are how polymorphism works.
+    - Can access specific address in memory.
+        - Useful in embedded and system application.
+-------------------------------------------------------------------------------
+
+DECLARING POINTERS - 
+     Variable_Type* Pointer_Name; // recommended, or
+     Variable_Type *Pointer_Name;
+     -> Pointer `Pointer_Name` points to a varialbe of `Variable_Type`
+     and the pointer itself has a type of `Variable_Type*`
+     meaning pointing to `Variable_Type`
+     (tip - Always read pointer names from left to right as
+     `Pointer_Name` points to `Variable_Type`)
+     
+     - IMP - Uninitialized pointers contain gargabe data and points to
+       anywhere. NEVER USE UNINITIALIZED RAW POINTERS.
+--------------------------------------------------------------------------------
+
+INITIALIZING POINTERS - 
+    - Null pointer- points to nowhere
+      variable_type* pointer_name{nullptr}; // or
+      variable_type* pointer_name{};
+    - Initializing to zero or nullptr (introduced in C++11) represents
+      address zero.
+      - implies that pointer is "pointing nowhere"
+---------------------------------------------------------------------------------
+
+ACCESSING POINTER ADDRESS -
+
+    THE ADDRESS OPERATOR
+    - variables are stored in unique addresses
+    - Unary operator
+    - Evaluates to the address of its operand
+    - IMP - operand can't be a constant or expression that evalutates to
+      temp values.
+    e.g.
+      int num{10};
+      cout << "value of num is: " << num << endl; // 10
+      cout << "sizeof num is: " << sizeof num << endl; // 4
+      cout << "Address of num is: " << &num << endl; // 0x61ff1c - address
+      int* p;
+      cout << "Value of p is: " << p << endl; // 0x61ff60 - garbage
+      cout << "Address of p is: " << &p << endl; // 0x61ff18
+      cout << "sizeof p is: " << sizeof p << endl; // 8
+      p = nullptr;
+      cout << "Value of p is: " << p << endl; // 0
+      p = &num;
+      cout << "Value of p is: " << endl; // 0x61ff1c - address of num
+      cout << "*p = " << *p << endl; // 10 - num's value
+      *p = 20; // changing value at num's address to 20
+      cout << "num = " << num << endl; // 20
+-------------------------------------------------------------------------------
+
+SIZEOF A POINTER VARIABLE -
+    - Don't confuse the size of a pointer and the size of what it points to
+    - All pointers in a program have same size regardless of what they are
+      pointing to.
+    - They may be pointing to very large or very small types.
+    - pointers need to store any memory location that your system can
+      allocate to variables. Therefore the range of memory address that it
+      needs to store is fixed and it doesn't matter what type of primitive
+      type or object or function is stored at that location. Hence every
+      pointer has the same size in given system.
+-------------------------------------------------------------------------------
+
+TYPED POINTERS - 
+    - The compiler will make sure that the address stored in a pointer variable
+      is of correct type.
+      
+      int score{10};
+      double high_temp{100.7};
+      int* score_ptr{nullptr};
+      score_ptr = &score; // OK
+      score_ptr = &high_temp; // compiler error -
+      // the size of the address fits in score_ptr, there's a type conflict.
+    - Also along with typed pointers, there are untyped void pointers that can
+      point to anything.
+--------------------------------------------------------------------------------
+
+DEREFERENCING A POINTER -
+    - Accessing the data, the pointer is pointing to is called dereferencing
+      the pointer.
+    - Dereferencing operator `*`
+    e.g.
+      int score{100};
+      int* score_ptr{&score};
+      cout << *score_ptr << endl; // 100, *score_ptr evaluates to RVALUE
+      *score_ptr = 200;
+      // here *score_ptr evaluates to a LVALUE
+      cout << *score_ptr << endl; // 200
+      cout << score << endl; // 200
+--------------------------------------------------------------------------------
+
+NOTE -
+    The `.` dot operator, subscript operator `[]` and few others have higher
+    precedence over dereferencing `*` operator. So, whenver dealing with a
+    pointer make sure you dereference the pointer inside parameters before
+    calling `.` dot operator or `[]` subscript operator or anything else that
+    may have/has higher precedence that you don't want to execute first.
+-------------------------------------------------------------------------------
+
+DYNAMIC MEMORY ALLOCATION -
+    - Allocating storage from the heap at runtime.
+    - We often don't know how much storage we need until we need it.
+    - We can allocate storage for a variable at run time.
+    
+    RECALL C++ ARRAYS
+    - We had to explicitly provide the size and it was fixed.
+    - But vectors grow and shrink dynamically?
+        - They use dynamc memory allocation and deallocation behind the scenes
+          to do that
+    - We can use pointers to access newly allocated heap storage.
+
+USING "new" TO DYNAMICALLY ALLOCATE STORAGE -
+    int* int_ptr{nullptr};
+    int_ptr = new int;
+    // allocate an int at runtime on heap.
+    cout << int_ptr << endl; // a memory address
+    // Address of the newly allocated int type storage on heap.
+    cout << *int_ptr << endl; // garbage integer
+    *int_ptr = 100;
+    cout << *int_ptr << endl; // 100
+
+IMP THINGS TO REMEMBER -
+    - The newly allocated storage area does not have an identifier name.
+      The only way to get to it and access its contents is via a pointer.
+    - You must dealloate the area after you're done with it to make it available
+      for use again.
+    - If you reassign the pointer which points to the allocated area, or it goes
+      out of scope before could deallocate the area, you have a memory leak.
+    - The newly allocated area contain garbage and can't be initialized.
+      You have to use assignment to set it to desired inital value.
+---------------------------------------------------------------------------------
+
+RELATIONSHIP BETWEEN ARRAYS AND POINTERS.
+    - The value of an array name is the address of the first element in the array.
+    - The value of a pointer varaible is an address.
+    - If the pointer points to the same data type as the array element then the
+      pointer and array can be used interchangebly. (almost)
+    
+    e.g.
+      int scores[]{100, 95, 89};
+      cout << scores << endl; // 0x61fec8
+      cout << *scores << endl; // 100
+      int* score_ptr{scores};
+      cout << score_ptr << endl; // 0x61fec8
+      cout << *score_ptr << endl; // 100
+      cout << score_ptr[0] << endl; // 100
+      cout << score_ptr[1] << endl; // 95
+      cout << score_ptr[2] << endl; // 89
+      
+USING POINTERS IN EXPRESSIONS-
+      int scores[]{100, 95, 89};
+      int* score_ptr{scores};
+      cout << score_ptr << endl; // 0x61ff10
+      cout << (score_ptr+1) << endl; // 0x61ff14 not 0x61ff11
+      // Since the 1 unit of int data takes 4 bytes usually.
+      cout << (score_ptr+2) << endl; // 0x61ff8
+      cout << *score_ptr << endl; // 100
+      cout << *(score_ptr+1) << endl; // 95
+      cout << *(score_ptr+2) << endl; // 89
+      
+SUBSCRIPT NOTATION    |   OFFSET NOTATION
+array_name[index]     |   *(array_name + index)
+pointer_name[index]   |   *(pointer_name + index)
+
+POINTER ARITHMETIC-
+    Pointers can be used in-
+        - Assignment expression
+        - Arithmetic expression
+        - Comparison expression
+    
+    - C++ allows subset of arithmetic operators to work with pointers.
+    - Pointers arithmetic only makes sense with raw arrays.
+    
+    - `++` and `--` increments or decrements the value of the pointer by 1 unit size
+      of datatype it points to.
+    
+    - `+` - increments pointer value by n*sizeof(type it's pointing to)
+      `-` - decrements pointer value by n*sizeof(type it's pointing to)
+    
+    - Subtracting 2 pointers.
+        - IMP - Both pointers must point to the same data type.
+        - Determines the number of elements of the datatype they're pointing to
+          that would fit between the addresses these pointers are pointing at +
+          1 - (1 extra)
+    
+    - Comparing 2 pointers == and !=
+        - Determines if two pointers are pointing to same location or not.
+--------------------------------------------------------------------------------------
+
+`const` AND POINTER-
+    - There are several ways to qualify pointers using const.
+        - pointers to constants
+        - constant pointers
+          (array names, reference parameters)
+        - constant pointers to constants.
+
+1. POINTERS TO CONSTANTS-
+    - The data pointed to by the pointers is constant and can't be changed.
+    - The pointer itself can change and point somewhere else.
+       
+       int high_score{100}; // not a constant
+       int low_score{65};
+       const int* score_ptr{&high_score};
+       // read right to left, score_ptr points to `const int`
+       *score_ptr = 86; // ERROR
+       score_ptr = &low_score; // OK
+
+2. CONSTANT POINTERS-
+    - The data pointed to by the pointers can be changed.
+    - The pointer itself can't change and point somewhere else.
+      
+      int high_score{100};
+      int low_score{65};
+      int* const score_ptr{&high_score};
+      // read from right to left, score_ptr is a `const` pointing to an `int`
+      *score_ptr = 86; // OK
+      score_ptr = &low_score; // ERROR
+
+3. CONSTANT POINTERS TO CONSTANTS.
+    - The pointer itself and data it points to both are constants and neither
+      can be changed.
+      
+       int high_score{100};
+       int low_score{65};
+       const int* const score_ptr{&high_score};
+       
+       *score_ptr = 86; // ERROR
+       score_ptr = &low_score; // ERROR
+-------------------------------------------------------------------------------
+
+RETURNING A POINTER FROM A FUNCTION-
+    - Functions can also return pointers.
+      
+      Declaration - 
+      data_type* functions();
+    
+    - Should return pointers to
+        - Memory dynamically allocated in the function.
+        - To `referenced data` that was passed in. (variables that have outer scope
+          beyond the function)
+    
+    - IMP: NEVER RETURN A POINTER TO A LOCAL FUNCTION VARIABLE!
+      e.g.
+        int* largest_int(int& a, int& b){
+            if(a>b) return &a;
+            return &b;
+        }
+        int main(){
+            int a{100}, b{200};
+            int* largest{largest_int(a,b)};
+            cout << *largest << endl; // 200
+            // largest is pointing to `b`
+            *largest = 250;  // changing b's value
+            cout << b << endl; // 250
+            return 0;
+        }
+-------------------------------------------------------------------------------------
+
+RETURNING DYNAMICALLY ALLOCATED MEMORY
+    
+    int* create_array(size_t size, int init_val=0){
+        int* new_storage;
+        new_storage = new int[size];
+        for(size_t i{}; i<size; i++){
+            new_storage[i] = init_val;
+        }
+        return new_storage;
+    }
+    
+    int main(){
+        int* my_array; // will be allocated by the function
+        my_array = create_array(100,20); // creating array
+        // use array
+        delete [] my_array;
+        // BE SURE TO FREE THE STORAGE USING `delete`
+        return 0;
+    }
+---------------------------------------------------------------------------------------
+
+POTENTIAL POINTER PITFALLS.
+    1. Uninitialized Pointer.
+      
+      int* ptr; // pointing anywhere
+      *ptr = 10;
+      // may change value of a critical location leading to unstable/ unwanted/ errorneous
+      // behaviour/ loss of data.
+    
+    2. Dangling Pointers.
+      - Pointers that are pointing to released memory.
+        
+        e.g. let's consider
+        - 2 pointers point to the same data.
+        - 1 pointer releases memory with `delete`
+        - The other pointer accesses the released data now whcih can be garbage/ imp
+          to some other process going on.
+      
+      - Common Cause
+        - Returning a pointer to a local variable.
+    
+    3. Not checking if `new` failed.
+      - If new fails to allocate storage loaction from heap, an excpetion is thrown.
+      - We can use exception handling to catch exceptions.
+      - Dereferencing a null pointer will cause your program to crash.
+    
+    4. Leaking Memory.
+      - Forgetting to release allocated memory with `delete`.
+      - IF you lose your pointer to the storage allocated on the heap, you don't have any
+        other way of getting to that storage again.
+      - Such a memory is said to be leaked or orphaned.
+------------------------------------------------------------------------------------------
+
+WHAT IS A REFERENCE?
+    - An alias for a variable name. not variable. It's the same variable just different name.
+    - Must be initialized to a variable when declared.
+    - Can't be null.
+    - Once initialized, can't be made to refer to different variable(i.e. memory location)
+    - Very useful as a function parameter.
+    - Might be useful to think of a reference as a constant pointer that is automatically
+      dereferenced.
+    
+    - Declaration - 
+      datatype_of_referenced_variable& reference_name = varaible_to_be_referenced;
+      Note - You can use auto instead of datatype to let the compiler deduce the correct datatype
+      to use
+      auto& reference_name = varaible_to_be_referenced;
+----------------------------------------------------------------------------------------------
+
+USING REFERENCE IN RANGE BASED FOR LOOPS
+    
+    vector<strings> stooges{"Larry", "Moe", "Curly"};
+    for(auto str: stooges)
+        str = "Funny";
+        // str is just a copy of element in stooges, only copies are being changed.
+    for(auto str:stooges)
+        cout << str << endl; // Larry\nMoe\nCurly\n
+    
+    // You can use referencing to change values of elements inside range based for loop.
+    for(auto& str: stooges)
+        str = "Funny";
+    for(const auto& str: stooges) // reference to `const auto`
+        cout << str << endl; // Funny\nFunny\nFunny\n
+    for(const auto& str: stooges)
+        str = "Any string"; // will cause an error. the str is set to a constant ref
+        // and hence you can't change it's value here.
+----------------------------------------------------------------------------------------------
+
+LVALUE AND RVALUE
+
+LVALUE - 
+    - values are object that occupies a location in memory and are addressable.
+    - these values have names.
+    - They are modifiable if they are not constant.
+    
+      int x{100};// x is an L-value
+                 // 100 is a R-value
+      
+      x = 1000;
+      x = 1000 + 20;
+      // expressions on right of `=` always evaluate to an R value.
+      
+      string name; // name is an L-Value;
+
+RVALUE -
+    - Non-addressable, non assignable
+    - A value that is not an L-value
+    - APPEARS - 
+        - on the right hand side of the assignment operator.
+        - A literal(only is Rvalue)
+        - a temporary which is intended to be non-modifiable.
+          (evaluation of any expression before it is finally assigned at each opeartion is
+          stored in a temporary variable first and then subsequent operations are done.)
+          e.g.
+          a = (c+d) / e;
+          here temp1= c+d
+          then
+          temp2 = temp1 / e
+          then 
+          a = temp2
+          these are the steps happening behind the scenes in a optimized way.
+
+A TRIVIAL BUT IMP POINT
+    - References always expect only `L-VALUES`
+      e.g.
+      int square(int& n){
+          return n*n;
+      }
+      int main(){
+          int num{10};
+          square(num);// OK, returns 100
+          square(5);// Error, can't assign r-value to a ref
+          return 0;
+      }
+    
+    - So whenever you declare a parameter as a reference, think about it for a while,
+      are you ever likely to pass only a `R-Value` to this function like the `square`
+      function we saw above, use reference parameters only and only when your argument
+      for that parameter is always garunteed to be a `R-Value`.
+---------------------------------------------------------------------------------------
+
+PASS BY VALUE -
+    - when the function does not modify the actual parameter and,
+    - the parameter is small and efficient to copy like simple types
+      (int, char, double etc)
+
+PASS BY REFERENCE - (Using both pointers and reference)
+    - WHen the function does modify the actual parameter and/or,
+    - the parameter is expensive to copy and/or,
+    - You want to point to various addresses with same pointer and
+    - It's OK for the pointer to become nullptr.
+    
+WHEN TO USE POINTERS VS WHEN TO USE REFERENCES.
+    - If you don't need to point to various memory locations with same name,
+      use references instead of pointers
+--------------------------------------------------------------------------------------

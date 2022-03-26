@@ -1,0 +1,9 @@
+Overload the following operators in the mystring class
+
+To gain experience overloading operators, you should do this challenge twice.
+First overload the operators using member functions and then using non member functions
+
+- : unary minus, returns the lowercase version of the Mystring obj
+!= : returns true if two strings are not equal.
++= : augmented concatenation
+* : repeat string n times

@@ -1,0 +1,22 @@
+You are provided with simple Account class hierarchy that contains
+Account - Basee calss
+Savings_Account - Derived class
+
+An Account has a name and balance
+A Savings_Account is an Account + interest rate
+
+1. Add a checking Account class to Account hierarchy
+A checking Account has a name and balance and has a fee of 1.50 per withdrawl transaction
+Every withdrawl transaction will be assessed with this flat fee
+
+2. Add a trust Account class to Account hierarchy
+A trust account has a name, balance and interest rate
+The trust account deposit works in the same as Savings Account
+However, any deposit of 5000 or more will recieve a 50 bonus deposited to the account
+The trust account withdrawl should only allow 3 withdrawls per
+
+year, don't worry about time here,
+just make sure that the 4th withdrawl fails and 
+withdrawl can't be more than 20% of the account balance
+
+code for section19 challenge was added here

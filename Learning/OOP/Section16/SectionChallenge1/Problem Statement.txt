@@ -1,0 +1,26 @@
+Section 16- Polymorhpism
+
+You are provided with a completed Account hierarchy that was completed in section15
+The provided class hierarchy does not use dynamic polymorhpism (it has no virtual functions)
+
+You challenge is the following
+
+1. Modify the Account class so that it is now an Abstract class by adding the following pure virtual
+functions:
+
+    virtual bool deposit(double amnt) = 0;
+    virtual bool withdraw(double amnt) = 0;
+    
+    Hint: You can implement these in the Account class if it make sense
+
+2. Create an I_Printable class interface and provide functionality so that all account types are
+printable to an ostream using the overloaded insertion operator
+
+    class I_printable{
+        friend std::ostream& operator<<(std::ostream& os, const I_Printable& obj);
+    public:
+        virtual void print(std::ostream& os) const = 0;
+        virtual ~I_Pritnable() = default; // same as virtual ~I_Printable(){} since there are no attributes
+    };
+
+3. Modify the functions in Accont_Util files so that we have only one version of each

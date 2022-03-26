@@ -1,0 +1,19 @@
+C style strings - ( Null Terminated Strings)
+Declaration - 
+char var_name[size]{"string_literal"}
+if string literal is provided, size is optional
+if string lietral is provided, it should be the case that size >= strlen + 1
+1 extra for null character
+
+* In C style string, there has to be the presence of terminating null within
+the respective memory location that was reserved for it (strlen + 1)
+
+C style strings can't be reassigned new string values like C++ strings
+e.g.
+char c_string[]{"This is a c style string"};
+c_string = "Re-assignment won't work";
+strcpy(c_string, "Other c/C++ string"); // will work
+* Note, strcpy won't do bounds checking and might overwrite critical data
+since it doesn't know how much memory was originally allocated for c_string
+
+

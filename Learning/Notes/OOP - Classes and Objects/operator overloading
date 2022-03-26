@@ -1,0 +1,245 @@
+OPERATOR OVERLOADING -
+    - TO make operators work with user defined classes/types the way user wants. C++ allows overloading of several
+      C++ operators.
+      
+    - Using traditoinal operators such as +,=,*... etc. with user defined data types
+        - Allows the user defined types to behave similar to built-in types.
+        - Can make code more readable and writable.
+    
+    - NOT done automatically ( except for assignment operator ). They must be explicitly defined.
+    
+    SUPPOSE WE HAVE A NUMBER CLASS THAT MODELS ANY NUMBER.
+    - Using Functions, operations would look like -
+        Number result = multiply(add(a,b), divide(c,d));
+    - Using methods, operations would look like -
+        Number result = (a.add(b)).multiply(c.divide(d));
+    - Using overloaded operators -
+        Number result = (a+b)*c/d;
+    
+    OPERATORS THAT CAN'T BE OVERLOADED IN C++ -
+        1. ::       Scope Resolution.
+        2. :?       Conditional
+        3. .*       Pointer to Member
+        4. .        Dot
+        5. sizeof   sizeof
+
+
+SOME BASIC RULES -
+    - Precedence and associativity can't be changed.
+    - `arity` can't be changed. i.e, a binary operator will always be a binary operator.
+    - Can't overload operators for primitive types.
+    - Can't create new operators.
+    - [], (), -> and the = (assignment) operator must be declated as member methods.
+    - Other operators can be declared as either member methods or global functions.
+------------------------------------------------------------------------------------------------------------------
+
+COPY ASSIGNMENT OPERATOR-
+    - C++ provides default assignment operator used for assigning one object to another.
+      Mystring s1{"Piyush"};
+      Mystring S2 = S1; // NOT ASSIGNMENT, Same as Mystring S2{s1};
+      // copy constructor is invoked here.
+      S2 = s1; // assignment.
+      
+    - Default - memberwise assignment, shallow copy.
+    - if we have raw pointer data member, we must employ deep copy semantics in overloaded assignment operator.
+    
+OVERLOADING THE COPY ASSIGNMENT OPERATOR (DEEP COPY) -
+    - SYNTAX -
+        Type& Type::operator=(const Type& rhs);
+        // the assignment operator returns the ref of this object again to enable chained assignment.
+        // the new object that may be assigned by this returned reference is garunteed to be at either same scope
+        // level or inner scope level.
+        // e.g. obj1 = obj2 = obj3
+        // first, obj2 = obj3 executes returning a ref to obj2.
+        // here obj1 is garunteed that while this line and I'm saying for this assignment line only
+        // that obj2 exists and is accessible to the scope where obj1 is and hence the chained assignment can happen
+        // by just returning a ref and we don't have to return a object again.
+        // returning a whole object again would invoke copy constructor again to create a temporary object rvalue.
+        e.g.
+        Mystring& Mystring::operator=(const Mystring& rhs);
+        s2 = s1; // we write this
+        s2.operator=(s1); // operator method is what called behind the scenes.
+        
+    - 1. CHECK FOR SELF ASSIGNMENT -
+        - if(this == &rhs) return *this; // return the object, the return type takes care of returning only reference
+    - 2. DEALLOCATE STORAGE FOR ANY this->ptr since we are overwriting it
+        - in statement s2 = s1; s2 already exists and if the class implements storage on heap, it has some data
+          on heap already and a raw data pointer maybe is pointing to it.
+        - Before we perform the assignment, we need to make sure that we release this storage first since if we don't
+          it'll cause memory leak.
+        - Once this step is done, we are ready to allocate new storage on heap for s2 and then perform the deep
+          copy
+    - 3. ALLOCATE STORAGE FOR THE DEEP COPY AND THEY COPY THE DATA THAT'S POINTED TO FROM RHS OBJECT.
+    - 4. TO ALLOW FOR CHAINED ASSIGNMENT, RETURN A DEREFERENCED this WHICH IS RETURNED AS REF.,
+         THAT WILL BE PASSED TO NEXT operator= METHOD AS REF ARGUMENT. i.e. return *this;
+-----------------------------------------------------------------------------------------------------------------------
+
+MOVE ASSIGNMENT OPERATOR -
+    - You an choose to overload the `move` assignemtn operator to handle non addressable r values
+      e.g. Mystring s3;
+      s3 = Mystring{"Temp string"};
+    - Here, the rhs is a temporary object with no name to address it, it has some data stored on heap, now
+      if you don't provide a move semantics for your Mystring class, what will happen is first the temporary
+      object will be created with data on the heap. Deep copy semantics will be invoked with copy assignment operator
+      which will cause another area on the heap to be allocated, copy of data on the heap will be done, and other
+      steps as we saw earlier, then destructor for the temporary object will be invoked which will release its data
+      from the heap
+    - what happened here is that a copy of the data on the heap is done unecessarily. The temp object is going to be
+      destroyed immediately after assignment so it won't be owning the data it stored on the heap. We are wasting
+      efforts performing deep copy here when we could have just copied the pointer from temporary object and nulling
+      out temporary object's pointer to prevent from that data being released when its destructor is envoked.
+    - This way, the object that was being assigned to, will not have to create a new storage on the heap, perform
+      deep copy. it just needs to take the ownership of the area on heap and relieve ownership of temp object.
+    - If we have a raw pointer implemented in our class, we should overload the assignment operator for efficiency.
+    Syntax -
+      Type& Type::operator=(const Type&& rhs);
+      // * IMP - always return *this; that will cause the ref of this newly assigned object to be returned,
+      // if you return rhs; // first of all it is declared const Type&& and return type is not const so the conversion
+      // will fail
+      // and even if you state the return type is const Type& ( which you should not do, you don't always chain the
+      // assignments, maybe you'll perform some operation on returned ref from assignemnt.) the temp object
+      // is destroyed immediately so the referencing will fail
+      Mystring s1; // constructing
+      s1 = Mystring{"Piyush"}; //move assignment is envoked since rhs is rvalue object
+      // first a constructor for temp object then move assignement operator is called
+      s1 = "Mahamuni";
+      // Same thing happens, We can't assign a differently typed value to a differently typed variable / object.
+      // the compiler then first tries to see if it can convert the c-style string "Mahamuni" to Mystring
+      // it may find a constructor that takes in c-style string as parameter and then will call it.
+      // or it may find a constructor that takes in std::string as parameter and it knows how to convert c-style
+      // string to std::string by invoking its constructor first and then passing that std::string to the respective
+      // constructor of Mystring
+      // After that the move assignment operator is called.
+      
+    - The semantics is same as move constructor except -
+        - You check for self assignment.
+        - You release the storage currently occupied by this object on the heap before moving.
+-----------------------------------------------------------------------------------------------------------------
+
+OVERLOADING OPERATORS AS METHODS.
+
+UNARY OPERATORS AS MEMBER METHODS-
+    ++, --, -(Unary negation), !
+    // Yup, `-` represents two operators, binary subtraction a-b and
+    // unary negation -a, -b
+    
+    SYNTAX -
+        Return_Type Type::operator`op`();
+        e.g.
+        Number Number::operator-() const; // note empty parameter list, since it is implemented as method
+        // it's only operand is this object
+        // the const at end declares that this method doesn't change any attributes of this object.
+        Number Number::operator++(); // pre increment
+        Number Number::operator++(int); // post increment, declaring one dummy parameter as int to abide
+        // by overloading and remove ambiguity between calls of post and pre increment, same for post and pre
+        // decrement.
+        
+        bool Number::operator!() const;  // Since used in logical expression, returns a bool
+        Number n1{100};
+        Number n2 = -n1; // n1.operator-(), rhs is a temporary object returned by this method
+        n2 = ++n1; // n1.operator(), pre
+        n2 = n1++; // n2.operator(int), post
+
+BINARY OPERATORS AS MEMBER METHODS-
+    +, -, ==, !=, <, >, ...
+    Syntax -
+        Return_Type Type::operator`op`(const Type& rhs);
+        e.g.
+        Number Number::operator+(const Number& rhs) const; // this needs to stay const and rhs too
+        Number Number::operator-(const Number& rhs) const;
+        bool Number::operator==(const Number& rhs) const;
+        bool Number::operator<(const Number& rhs) const;
+    
+    - OVERLOADING + OPERATOR AS METHOD OF Mystring CLASS -
+        Mystring larry{"Larry"}; // constructor taking a `const char*` typed value as input argument.
+        Mystring moe{"Moe"};
+        Mystring stooges{"is one of the 3 stooges"};
+        Mystring result = larry + stooges; // rhs is replaced with
+                        // larry.operator+(stooges). and it works fine
+        result = moe + " is also a stooge";
+                 // moe.operator+(" is also a stooge");
+        // but the method operator() expects a `const Mystring&` and here it received a c style string
+        // aka `const char*`. The compiler here will first check if there's a constructor that can take
+        // a `const char*` for Mystring class and it does find it since we implemented one
+        // so this assignment expression also works fine.
+        
+        result = "Moe" + stooges;
+        // ERROR,
+        // 1. c style string aka `const char*` doesn't have and can't have a overloaded + operator as method
+        // to handle a Mystring class as rhs.
+        // 2. "Moe" is not converted to Mystring object automatically here since the associativity of + is from
+        // left to right, it doesn't know which function to call and so it can't see its signature to be aware
+        // of the fact that it needs to convert `const char*` to Mystring by invoking constructor call
+-----------------------------------------------------------------------------------------------------------------
+
+OVERLOADING OPERATORS AS GLOBAL FUNCIONS-
+
+UNARY OPERATORS-
+
+    Return_Type operator`op`(Type& obj);
+    e.g.
+    Number operator-(const Number& obj); // unary negation
+    Number operator++(Number& obj); // pre, no const since it changes the object
+    Number operator++(Number& obj, int); // post
+    bool operator!(const Number& obj);
+    
+    - IMP NOTE -
+        You can't use both global and member functions at the same time since compiler won't be able to
+        figure out which one to use.
+
+BINARY OPERATORS -
+    - SYNTAX -
+        ReturnType operator`op`(const Type& lhs, const Type& rhs);
+        // using const since no binary operator changes the value of either rhs or lhs
+---------------------------------------------------------------------------------------------------------------------
+
+OVERLOADING STREAM INSERTION AND EXTRACTION OPERATORS -
+    - Use cases
+      e.g.
+      Mystring piyush{"Piyush"};
+      cout << piyush << endl; // piyush
+      Account piyush_accnt{"Piyush", 10000, "savings"};
+      cout << piyush_accnt << endl; // prints -
+      // Account Holder: Piyush,
+      // Balance: 10000
+      // Type: savings
+      cin >> piyush; // read data from console and do the necessary changes in object piyush
+      // to reflect that, here change the string "Piyush" to something else
+      cin >> piyush_accnt;
+      // read the data from console and change necessary attributes in object piyush
+      // here it could be name, balance, type or any combination of these.
+    
+    - These operators << and >> don't make sense to be implemented as member functions-
+        - Left operand must be a user defined class ( we might want to use it with streams so... won't work )
+          stream_obj << obj; // using obj of our class to insert into stream
+          stream_obj >> obj; // extracting info from stream to change attributes of obj
+          // in both cases those operators are replaced with such call -
+          // stream_obj.operator<<(obj) or stream_obj.operator>>(obj)
+          // so you need to implement these overloaded operatos as either members of that stream class
+          // or as global functions, you can't oveload these as members of your class.
+
+OVERLOADING `<<`
+    - SYNTAX -
+        std::ostream& operator<<(std::ostream& os, const Type& obj){
+            // code ...
+            return os;
+        }
+    - return the reference to the output stream that was initially passed in as argument for chained expressions
+      so we can keep inserting.
+      e.g.
+      Mystring piyush{"piyush"};
+      int a {10};
+      cout << piyush << 10 << endl;
+      
+OVERLOADING `>>`
+    - SYNTAX -
+        std::istream& operator>>(std::istream& is, Type& obj){ // type is not const since that object changes
+            is >> a;
+            is >> b;
+            is >> d;
+            // extract all required values form stream and use them as necessary
+            // The obj is catched here as `Type&` and not `const Type&` since we need change that object
+            // in place
+            return is; // return reference to is so that we can keep extracting.
+        }
+

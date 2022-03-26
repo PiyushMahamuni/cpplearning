@@ -1,0 +1,248 @@
+INHERITANCE -
+    WHAT IS INHERITANCE AND WHY IS IT USED?
+    - Provides a method for creating new classes from existing ones.
+    - The new class contains the data and behaviours of the existing class.
+    - Allow for reuse of existing class.
+    - Allow us to focus on common attributes among set of classes.
+    - Allows new classes to modify behaviour of existing classes to make it unique.
+        - Without actually modifying the original class.
+
+TERMINOLOGY AND NOTATIONS-
+    INHERITANCE -
+        - Process of creating new class from existing class.
+        - Reuse mechanism.
+    
+    SINGLE INHERITANCE -
+        - A new class is created from another `single` class.
+        
+    MULTIPLE INHERITANCE -
+        - A new class is created from two or more other classes.
+    
+    BASE CLASS ( PARENT / SUPER CLASS ) -
+        - The class being extended or inherited from.
+        - Here super means parent, but parent classes are more general and sub classes are more specific
+          with having more specific attributes and methods. The sense of use of words is opposite that of sets
+          while using these words - super and sub
+    
+    DERIVED CLASS ( CHILD/ SUB CLASS ) -
+        - The class being created from the base class
+        - Will inherit attributes and operations from base class.
+        
+    IS-A RELATIONSHIP -
+        - public inheritance
+        - Derived classes are sub-types of their base class.
+          e.g.
+          Savings account `is a` account
+          Player `is a` Person
+        - Can use a derived class object wherever we use a base class object.
+          e.g.
+          Person class has a global friend function `eat(Person& obj)`
+          Plyaer class is publically inherited from Person class
+          so you can pass a Player object to eat() and it will perform the respective task
+          on just the `Person` part of the Player object.
+          while passing such arguments of child class to parameter expecting parent class,
+          child part of that object is sliced away and only parent part of that object is passed on
+          and the block that recieves the passed object can only see parent part.
+        
+    GENERALIZATION -
+        - Combining similar classes into a single, more general class based on common attributes
+          (combination here refers to intersection of attributes and methods those various classes may have
+          not union)
+    
+    SPECIALIZATION -
+        - Creating new classes from existing classes providing more specialized attributes and/or operations.
+        
+    INHERITANCE OR CLASS HEIRARCHIES -
+        - Organization of our inheritance relationship
+        e.g.
+        A : root class, not being inherited from any other class
+        B is derived from A
+        C is derived from A
+        D is derived from C
+        E is derived from D
+        
+        above statements will imply =>
+        ----------------------------------------
+        1. Specialization ->
+        A -> B
+        A -> C -> D -> E
+        ----------------------------------------
+        2. Generalization
+        B -> A
+        E -> D -> C -> A
+        ----------------------------------------
+        3. A is not B or C or D or E (or is inclusive)
+        4. B is not C or D or E
+        5. C is not D or E or B
+        6. D is not E or B
+        7. E is not B
+        8. B is an A
+        9. C is an A
+        10. D is a C ( and since C is an A), D is an A (Inheritance is transitive).
+        11. E is a D, a C, an A
+-------------------------------------------------------------------------------------------------------------------
+
+INHERITANCE VS COMPOSITION -
+    
+    PUBLIC INHERITANCE VS COMPOSITIONS
+        - Both allow reuse of existing classes.
+        - Public Inheritance -
+            - establishes "is a" relationship between classes.
+            - Employee "is a" Person.
+            - Checking_Account "is a" Account.
+            - Circle "is a" Shape.
+        - Composition -
+            - establishes "has a" relationship.
+            - Person "has a" Account
+            - Player "has a" Special_Attack
+            - Circle "has a" Location
+    
+    - Composition should be made at most general appropriate class and the composition is then inherited by all of its
+      derived class.
+      e.g. A Person should have an Account
+      so by inheritance, all Employees and Players will also have an Account
+      
+    - When we model class data members, we use compositoin (i.e. all the objects are primitive types a class
+      declares inside its body so that it's objects owns it)
+      When drawing class diagrams, we don't draw primitive types in composition diagrams.
+----------------------------------------------------------------------------------------------------------------------
+
+DERIVING CLASSES FROM EXISTING CLASSES.
+
+C++ DERIVATION SYNTAX ANS SEMANTCIS:
+    
+    class Base{
+        // Base class memebers;
+    };
+    class Derived: access_modifier Base{
+        // Derived class members;
+    };
+    Access specifiers can be: public, private or protected. if not specified, private inheritance is done by
+    default.
+----------------------------------------------------------------------------------------------------------------------
+
+TYPES OF INHERITANCE IN C++
+    
+    PUBLIC:
+        - Most Common
+        - Establishes `IS-A` relationship between Derived and Base class.
+    
+    PRIVATE AND PROTECTED:
+        - Establishes `Derived class HAS A Basee class` relationship.
+        - `is implemented in terms of` relationship.
+        - Different from compositions.
+    
+    PROTECTED MEMBERS AND ACCESS MODIFIERS- 
+        The protected class member modifier
+        class Base{
+            protected:
+            // protected base class members.
+            int pr;
+            private:
+            int p;
+            ....
+            public:
+            int pu;
+            void set_p(int a){ p = a; }
+            //...
+        };
+        - Accessible from the base class itself.
+        - Accessible from the classes derived from Base.
+        - Not accessible by objects of Base or Derived.
+        
+                                    // access modifiers
+        class derived_class_name : public/protected/private base_class_name {
+        // class definition
+        // doesn't matter what type of inheritance is used,
+        // base class's private attributes can't be directly accessed from here. i.e. definition of derived class
+        // base:: p isn't accessible here
+        
+        // if you invoke any accessible attributes of class Base that do some processing on private attribute,
+        // you get indirect access to that attribute
+        
+        // You get direct access to public and protected attributes of base class
+        // base::pr and base::pu are both accessible here
+        base::pr, pr, I can use either to access
+        
+        };
+    
+    - IMP POINTS
+        - once derived either by private, protected or public inheritance, you lose the access to
+          private attributes of base class in the body of derived class.
+        - You still get access to base classes other i.e. public and protected attributes directly in the
+          derived class.
+        - Though you lose the direct access to private attributes of base class in derived class, they are still
+          inherited in derived class.
+        - Private and protected members aren't directly accessible from derived class or by their objects with
+          scope resolution `::`, pointer to member `->`, dot `.` operator.
+        - PUBLIC INHERITANCE -
+            - public and protected attributes of base class still remain public and proetected resp. in derived.
+            - private attributes are inherited but aren't accessible either in class body or by instances of 
+              derived class.
+    
+        - PROTECTED INHERITANCE -
+            - public attributes become protected, protected attributes remain protected.
+            - private attributes are inherited but aren't accessible either in class body or by instances of derived
+              class.
+        - PRIVATE INHERITANCE -
+            - public and protected attributes of base class become private attributes of derived class.
+            - private attribtues of base class are inherited but aren't accessible in derived class's body or by
+              its instances.
+-----------------------------------------------------------------------------------------------------------------------
+
+CONSTRUCTORS AND DESTRUCTORS WITH INHERITANCE
+
+CONSTRUCTOR AND CLASS INITIALIZATION:
+    - A derived class inherits ( except few of base classes attributes (methods and data) ) attributes
+      from base class.
+    - The base part of the derived class MUST initialized BEFORE the derived class ( Since, derived class's
+      construction may depend upon base class's attributes being initialized before.)
+    
+    - When a derived object is created
+        - Base class constructor executes then
+        - Derived class constructor executes.
+    
+DESTRUCTORS
+    - Class destructors are invoked in reverse order as constructors.
+    - The derived part of the Derived class MUST destroyed first ( since it may be using Base class resources and
+      and doing things other way around may lead to fatal errors.) BEFORE the base class destructor is invoked.
+    
+    - When a deirved object is destroyed
+        - Derived class destructor executes then
+        - Base class destructor exectues
+        - Each destructor should free resources allocated in its own constructors.
+        
+IMP POINTS -
+    - A Derived class does NOT inherit
+        1. Base class constructor
+        2. Base class destructor
+        3. Base class overloaded assignment operator
+        4. Base class friend functions.
+    - However, the base class constructor, destructor, and overloaded assignment operators can be invoked from
+      derived classes using scope resolution - Base::attribute;
+    
+    - C++11 and forward, allows explicit inheritance of base `non-special` constructors with syntax -
+      using Base::Base;
+      this declaration statement can be written anywhere in the body of the derived class.
+      - Lots of rules involved, often better to define constructors yourself.
+----------------------------------------------------------------------------------------------------------------------
+
+PASSING ARGUMENTS TO BASE CLASS CONSTRUCTORS
+    - Q. How can we control exactly which Base class constructor is used?
+        - We can invoke the wichever Base class constructor we wish in the initialization list of the derived
+          class.
+        
+        - SYNTAX -
+          class Base{
+              public:
+                Base(); // no args constructor
+                Base(int); // int arg constructor
+                ...
+          };
+          Derived::Derived(int x): Base(x), {optional initializers for derived} {
+              // body of int arg Derived constructor
+          }
+        
+        - If no base class cnostructor is mentioned explicitly, the default no args constructor is called
+          for the initialization of base part of the instance of the derived class.
+

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="Number_Theory_Basic" Database="" Version="10.0.0">
+  <Project Name="_01_ModularExponentiation" Path="ModularExponentiation/ModularExponentiation.project" Active="No"/>
+  <Project Name="_02_GCD" Path="_02_GCD/_02_GCD.project" Active="No"/>
+  <Project Name="C_01_alice_and_candies" Path="C_01_alice_and_candies/C_01_alice_and_candies.project" Active="No"/>
+  <Project Name="Joseph_and_Arrays" Path="Joseph_and_Arrays/Joseph_and_Arrays.project" Active="No"/>
+  <Project Name="Naval_battle_not_mine" Path="Naval_battle_not_mine/Naval_battle_not_mine.project" Active="No"/>
+  <Project Name="_03" Path="_03/_03.project" Active="No"/>
+  <Project Name="prime_generation" Path="prime_generation/prime_generation.project" Active="No"/>
+  <Project Name="_04" Path="_04/_04.project" Active="No"/>
+  <Project Name="_05" Path="_05/_05.project" Active="No"/>
+  <Project Name="fibonacci_sequence" Path="fibonacci_sequence/fibonacci_sequence.project" Active="No"/>
+  <Project Name="Permutations" Path="Permutations/Permutations.project" Active="Yes"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Environment/>
+      <Project Name="_01_ModularExponentiation" ConfigName="Debug"/>
+      <Project Name="_02_GCD" ConfigName="Debug"/>
+      <Project Name="C_01_alice_and_candies" ConfigName="Debug"/>
+      <Project Name="Joseph_and_Arrays" ConfigName="Debug"/>
+      <Project Name="Naval_battle_not_mine" ConfigName="Debug"/>
+      <Project Name="_03" ConfigName="Debug"/>
+      <Project Name="prime_generation" ConfigName="Debug"/>
+      <Project Name="_04" ConfigName="Debug"/>
+      <Project Name="_05" ConfigName="Debug"/>
+      <Project Name="fibonacci_sequence" ConfigName="Debug"/>
+      <Project Name="Permutations" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Environment/>
+      <Project Name="_01_ModularExponentiation" ConfigName="Release"/>
+      <Project Name="_02_GCD" ConfigName="Release"/>
+      <Project Name="C_01_alice_and_candies" ConfigName="Release"/>
+      <Project Name="Joseph_and_Arrays" ConfigName="Release"/>
+      <Project Name="Naval_battle_not_mine" ConfigName="Release"/>
+      <Project Name="_03" ConfigName="Release"/>
+      <Project Name="prime_generation" ConfigName="Release"/>
+      <Project Name="_04" ConfigName="Release"/>
+      <Project Name="_05" ConfigName="Release"/>
+      <Project Name="fibonacci_sequence" ConfigName="Release"/>
+      <Project Name="Permutations" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>

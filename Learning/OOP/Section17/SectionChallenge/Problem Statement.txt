@@ -1,0 +1,13 @@
+Create a program that has following
+
+1. A function named make that creates and returns a unique pointer to a vector of shared
+pointers to Test objects.
+
+2. A function name fill that expects a vector of shared pointers to test objects and a
+int representing the number of test objects to create dynamically and add to the vector
+
+The function will prompt the user to enter an integer, create a shared_ptr to a test
+object initialized to the entered integer and add that shared pointer to the vector
+
+3. A function named display that expects a vector of shared_ptr to Test object and display
+the data in each test object

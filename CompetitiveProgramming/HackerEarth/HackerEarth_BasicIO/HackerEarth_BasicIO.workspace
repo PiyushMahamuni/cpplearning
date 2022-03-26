@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="HackerEarth_BasicIO" Database="" Version="10.0.0">
+  <Project Name="lovely_string" Path="lovely_string/lovely_string.project" Active="No"/>
+  <Project Name="Cost_Of_Balloons" Path="Cost_Of_Balloons/Cost_Of_Balloons.project" Active="No"/>
+  <Project Name="Seating_Arrangement" Path="Seating_Arrangement/Seating_Arrangement.project" Active="No"/>
+  <Project Name="split_houses" Path="split_houses/split_houses.project" Active="No"/>
+  <Project Name="Anagrams" Path="Anagrams/Anagrams.project" Active="No"/>
+  <Project Name="ChessBoard" Path="ChessBoard/ChessBoard.project" Active="No"/>
+  <Project Name="THE_GCD_Function" Path="THE_GCD_Function/THE_GCD_Function.project" Active="No"/>
+  <Project Name="GCD_2" Path="GCD_2/GCD_2.project" Active="No"/>
+  <Project Name="ReplaceTheString" Path="ReplaceTheString/ReplaceTheString.project" Active="No"/>
+  <Project Name="ScoreBoardQueries" Path="ScoreBoardQueries/ScoreBoardQueries.project" Active="No"/>
+  <Project Name="que1" Path="que1/que1.project" Active="Yes"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Environment/>
+      <Project Name="lovely_string" ConfigName="Debug"/>
+      <Project Name="Cost_Of_Balloons" ConfigName="Debug"/>
+      <Project Name="Seating_Arrangement" ConfigName="Debug"/>
+      <Project Name="split_houses" ConfigName="Debug"/>
+      <Project Name="Anagrams" ConfigName="Debug"/>
+      <Project Name="ChessBoard" ConfigName="Debug"/>
+      <Project Name="THE_GCD_Function" ConfigName="Debug"/>
+      <Project Name="GCD_2" ConfigName="Debug"/>
+      <Project Name="ReplaceTheString" ConfigName="Debug"/>
+      <Project Name="ScoreBoardQueries" ConfigName="Debug"/>
+      <Project Name="que1" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Environment/>
+      <Project Name="lovely_string" ConfigName="Release"/>
+      <Project Name="Cost_Of_Balloons" ConfigName="Release"/>
+      <Project Name="Seating_Arrangement" ConfigName="Release"/>
+      <Project Name="split_houses" ConfigName="Release"/>
+      <Project Name="Anagrams" ConfigName="Release"/>
+      <Project Name="ChessBoard" ConfigName="Release"/>
+      <Project Name="THE_GCD_Function" ConfigName="Release"/>
+      <Project Name="GCD_2" ConfigName="Release"/>
+      <Project Name="ReplaceTheString" ConfigName="Release"/>
+      <Project Name="ScoreBoardQueries" ConfigName="Release"/>
+      <Project Name="que1" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>

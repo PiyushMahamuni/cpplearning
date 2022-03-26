@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="PrepBytes" Database="" Version="10.0.0">
+  <Project Name="PartitioningClock" Path="PartitioningClock/PartitioningClock.project" Active="No"/>
+  <Project Name="Gym" Path="Gym/Gym.project" Active="No"/>
+  <Project Name="TomJerry" Path="TomJerry/TomJerry.project" Active="Yes"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Environment/>
+      <Project Name="PartitioningClock" ConfigName="Debug"/>
+      <Project Name="Gym" ConfigName="Debug"/>
+      <Project Name="TomJerry" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Environment/>
+      <Project Name="PartitioningClock" ConfigName="Release"/>
+      <Project Name="Gym" ConfigName="Release"/>
+      <Project Name="TomJerry" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>

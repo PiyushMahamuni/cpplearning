@@ -1,0 +1,310 @@
+FUNCTION DEFINITION-
+    has 4 parts.
+    - name
+        - same rule as of variables.
+    - parameter list 
+        - the variables defined as its parameters.
+        - their type must be specified.
+    - return type
+        - the type of the data that is returned from the function.
+    - function body
+        - the statement that are exectued when the function is called.
+        - it is written inside curly braces.
+
+* Note ->
+Functions must be defined before they're called otherwise "function not
+declared in this scope" compiler error will be thrown
+
+FUNCTOIN PROTOTYPE -
+    - The compiler must `know` about a function before it is used.
+      Two ways to make sure that it does -
+      1. Define functions before calling them.
+        - Ok for small programs but not practical for larger programs.
+        - Can't be used where there's a closed cycle of function calls.
+          e.g. two functions calling each other.
+      2. Use FUNCTIION PROTOTYPE
+        - Tells the complier what it needs to know without a full function
+          definition.
+        - Also called `Forward Declaration`.
+        - Placed at the beginning of the program.
+        - Also used in our own header files (.h).
+SYNTAX -
+return_type func_name(parameter_list);
+* You don't need to have parameter names in the prototype declaration, only
+parameter types.
+-------------------------------------------------------------------------------
+
+PASS BY VALUE -
+    - A copyu of the data is passed tothe function.
+    - When you pass data into a function, it is passed by value by default.
+    - Whatever changes made to the parameter inside function body does not
+      reflect on the values of the arguments passed in.
+-------------------------------------------------------------------------------
+
+FORMAL VS ACTUAL PARAMETER -
+    - Formal
+        - The parameters defined in the function header while defining
+          function.
+    - Actual
+        - The arguments used in function call.
+-------------------------------------------------------------------------------
+
+NOTE -
+The return; statement is optional for void return type functions.
+-------------------------------------------------------------------------------
+
+DEFAULT ARGUMENT VALUES -
+    - When a function is called, all arguments must be supplied.
+    - Sometimes some of the arguments have the same values most of the time.
+    - We can tell the compiler to use default values if the arguments are not
+      supllied.
+    - Default values can be in the function prototype or in the functoin
+      definition not both.
+        - best practice - in the prototype.
+        - must appear at the tail end of the parameter list.
+    - Can have multiple default arguments.
+        - must appear consecutively at the tail end of the parameter list.
+-------------------------------------------------------------------------------
+
+OVERLOADING FUNCTIONS -
+    - We can have functions that have different parameter list with same
+      function name.
+    - The compiler must be able to tell the fucntions apart based on the paramter
+      lists and arguments supplied.
+    - A type of polymorphism (Many forms, some concept)
+        - We can have the same name work with different data types to execute
+          similar behaviour.
+    - Abstraction mechanism since we can just say print() instead of printchar()
+      printint(), printdoulble()... and so on.
+    - Return type can't be used to tell overloaded functions apart.
+    
+--------------------------------------------------------------------------------
+
+PASSING ARRAYS INTO FUNCTIONS-
+
+    - We can pass an array to a function by providing square brackets in the
+      formal parameter description.
+      e.g. void print_array(int numbers[])
+    - The array elements are not copied.
+    - Since the array name evaluates to the location of the array in memory -
+      this address is what copied.
+    - So the function has no idea of how many elements are in the array since
+      all it knows is the location of the first element (the nmae of the array)
+---------------------------------------------------------------------------------
+
+PREVENTING MODIFYING ARRAY VALUES WHICH IS PASSED TO A FUNCTION
+    - We can tell the compiler that function parameters are const. (read only)
+      within the body of the function.
+      
+      void print_array(const int numbers[], size_t size){
+          for(size_t i{}; i<size; i++){
+              cout << numbers[i] << endl;
+          }
+          numbers[0] = 3 // any attempt to modify the array will cause a
+          // compiler error
+      }
+---------------------------------------------------------------------------------
+
+PASS BY REFERENCE -
+    - Sometimes we want to change the actual parameter from within the function
+      body.
+    - In order to achieve this, we need the location address of the actual
+      parameter aka 'argument'.
+    - We can use reference parameters to tell the compiler to pass in a reference
+      to the formal parameter.
+      
+      void scale_num(int& num){ // parameter type is `ref. parameter to int`
+        if(num>100) num = 100;
+      }
+      scale_num(number); //function call, passing in a int variable
+    - I was actually used to this way of 'passing by reference'
+      void scale_num(int* num){ // parameter type is 'pointer to an int'
+          if(*num>100) *num = 100;
+      }
+      scale_num(&number); // passing in the address of an int
+      
+      Though this method achieves the same overall effect as the passing by ref
+      mechanism earlier, here what is happening is actually pass by value for
+      the address of the variable.
+----------------------------------------------------------------------------------
+
+SCOPE RULES -
+    - C++ uses scope rules to determine where an identifier can be used.
+    - C++ uses static or lexical scoping - the same way you read the code.
+    
+LOCAL SCOPE -
+    - Indentifiers declared in a block{}
+    - Function parameters have block scope.
+    - Only visible within the block {} where they're declared.
+    - Function local variable are only active while the function is executing.
+    - Local variables are NOT preserved between function calls except for
+      `static local variables`.
+      When a function is called, its block and local variables become alive and are
+      allocated storage. When the function call is completed, the storage that they
+      have been allocated will likely be used by some other process and then the
+      block and the local variables are no longer 'alive' and hence are not preserved.
+    - With nested blocks, inner blocks can see outside but outer blocks can't see
+      inside.
+    - When there are same identifier name at multiple scope level and is called at a
+      place, the nearest (most inner)scope level variable will be reffered at that
+      place.
+-------------------------------------------------------------------------------------
+
+STATIC LOCAL VARIABLES -
+    - Declared with static qualifier.
+        static int value {10};
+    - have the lifetime the same as the program, not the same of the block that
+      contains it.
+    - Only visible to statements within its own block.
+    - aka. a global variable which is invisible to every block except where it is
+      declared.
+    - Value is preserved between function calls
+    - Used when it is req. or more convinient to know the previous value of a variable
+      without having it to be passed all the time.
+    - They're initialized only once when the block/function is activated for the first
+      time.
+      
+      e.g. -
+      void CountFuncCall();
+      int main(){
+          for(int i{}; i<3; i++) CountFuncCall();
+          return 0;
+      }
+      void CountFuncCall(){
+          static size_t count{1};
+          cout << "CountFuncCall() count: " << count << endl;
+          count++:
+      }
+      OUTPUT - 
+      CountFuncCall() count: 1
+      CountFuncCall() count: 2
+      CountFuncCall() count: 3
+    - Why not use a global variable instead if they are this similar?
+        - Avoid scope name pollution, if that variable will only be accessed by a
+          single block; there's no point in making it available to all scopes and
+          blocks.
+        - Security and preventing programming errors.
+          If it is essential that a variable needs to be preserved between calls
+          yet still be accessed by just a particular block making sure that it
+          can't be accessed by somewhere else.
+
+STATIC LOCAL VARIABLES INSIDE RECURSIVE FUNCTION -
+    - All instances/stacks/frames of the same function see the same memory location
+      of static variable.
+      e.g.
+      size_t fact(size_t num){
+          static size_t count{num};
+          if(count>1){ // controls how many times the recursion will happen
+            count--;
+            return num*fact(count)
+          }
+          return 1;
+      }
+--------------------------------------------------------------------------------------
+
+SCOPING MECHANISM - 
+    - Whenever an identifier is referred the compiler & program first looks within its
+      block and if it finds a match, it uses that. Else, it goes up to immediate outer
+      scope `block` to find it utnil it reaches global scope.
+      e.g.
+      
+      int global{400};
+      int main(){
+          cout << global << endl;  // 400
+          {
+              int global{-10};
+              cout << global << endl; // -10
+              {
+                  int global{200};
+                  cout << global << endl; // 200
+                  {
+                      cout << global << endl; // 200
+                  }
+                  {
+                      extern int global;
+                      // it is the exact same global variable
+                      cout << global << endl; // 400
+                  }
+              }
+          }
+          return 0;
+      }
+-------------------------------------------------------------------------------------------
+
+HOW DO FUNCTION CALLS WORK?
+    - Analogous to stack of books.
+    - LIFO - Last In First Out.
+    - 'push' - Pushing on Activation Record/ Stack Frame on top of function call stack.
+    - 'pop' - removing an Activation Record/a stack Frame from top of function call stack.
+
+STACK FRAME/ ATCTIVATION RECORD-
+    - Function must return control to function (block) that called it.
+    - Each time a function is called we create a new activation record and push it on stack.
+    - When a function terminates we pop the activation record and return.
+    - Local variables and formal parameters are allocated on the stack.
+
+STACK SIZE IS FINITE, IF YOU'RE NOT CAREFUL YOU CAN CAUSE STACK OVERFLOW, WHICH IS AN
+UNRECOVERABLE ERROR MOST OF THE TIME.
+
+MEMORY LAYOUT -
+|            Heap/Free Storage             |    Function call stack    |Static/Global var|  Code Area   |
+----------------------------------------------------------------------------------------------
+
+WHAT HAPPENS WHEN MAIN FUNCTION CALLS A FUNCTION (FUNC1 SAY)
+*There are other ways to achieve the same result but here's what typically happens -
+
+    main:
+        - push space for the return value.
+        - push space for the parameters.
+        - push the return address.
+        - transfer control to func1 (jump)
+    func1:
+        - push the address of the previous activation record.
+        - push any register values that will need to be stored before returning to the caller.
+        - perform the code in func1.
+        - restore the register values.
+        - restore the previous activation record.
+          (move stack pointer)
+        - store any function result.
+        - transfer control to the return address (jump)
+    main:
+        - pop the parameters.
+        - pop the return value.
+-------------------------------------------------------------------------------------------------
+
+INLINE FUNCTIONS:
+    - Function calls have certain amount of overhead.
+    - Thing that happen when a fucntion is called on the call stack.
+    - Sometimes we have simple functions whose call overhead take more time than executing
+      function themselves.
+    - We can "Suggest" to the compiler to compile them inline.
+      essentially whenever there's call to that function, replace that code with the appropriate
+      body of function that will result in same execution if actual function was called.
+    - avoid function call overhead.
+    - generate inline assembly code.
+    - faster.
+    - could cause code binaries to bloat. (since while making a funciton inline, the assembly code
+      is repeated at all the positions that function was called instead of handing over the control
+      to the same function)
+    - Compiler optimizations are very sophisticated.
+        - will likely inline even without your suggestion.
+      e.g.
+      inline int add(int a, int b){
+          return a+b;
+      }
+      int main(){
+          int result{};
+          result = add(100,200);
+          return 0;
+      }
+-------------------------------------------------------------------------------------------------
+
+RECURSION FUNCTION -
+    - A function that calls itself.
+        - either direcly or indirectly through another function.
+    - Recursion Problem Solving - 
+        - Base case
+        - Divide the rest of problem into subproblem and do recursive call.
+      e.g.
+      Base Case: factorial(0) = 0! = 1
+      Recursive Case: factorial(n) = n * factorial(n-1) = n * (n-1)!

@@ -1,0 +1,1279 @@
+LET'S REVIEW PROCEDURAL PROGRAMMING - 
+    - Focus is on the processes or actions that a program takes.
+    - Programs are typically collection of functions.
+    - Data is declared seperately.
+    - Data is passed as an argument into functions.
+    - Fairly easy to learn.
+    
+    LIMITATIONS - 
+        - Functions need to know the structure of data.
+            - If the structure of the data is changed, most of the
+              functions need to be changed too.
+        - As program get larger they become more
+            - difficult to understand.
+            - difficult to maintain.
+            - difficult to extend.
+            - difficult to debug.
+            - difficult to reuse.
+            - fragile and easier to break.
+------------------------------------------------------------------------------
+
+WHAT IS OOP AND IT'S PERKS?
+
+CLASSES AND OBJECTS - 
+    - Focus is on the classes that model the real-world domain entities
+    - Allow developers to think at a higher level of abstraction
+      (Mostly away from low level memory management)
+    - Used successfully in many large programs.
+
+ENCAPSULATION - 
+    - Objects contain data AND operations that work on that data.
+    - Abstract Data Type (ADT).
+
+INFORMATION HIDING -
+    - implementation-specific logic can be hidden.
+    - Users of the class, code to the interface since they don't need to know
+      the implementation.
+    - more abstraction.
+    - easier to test, debug, maintain and extend.
+
+REUSABILITY -
+    - Easier to reuse classes in other applications.
+    - Faster Development.
+    - Higher Quality.
+
+INHERITANCE -
+    - Can create new classes in terms of exising class.
+    - Reusability.
+    - Polymorphic Classes.
+
+POLYMORPHISM AND MORE.
+------------------------------------------------------------------------------------
+
+LIMITATIONS - 
+    - NOT A PANACEA -
+        - OOP won't make bad code better.
+        - not suitable for all types of problems.
+        - not everything decomposes to a class.
+        - Learning Curve
+            - Usually a steeper curve, escpecially for C++.
+            - many OO languages
+            - many OO languages, many variations of OOP concepts, have to learn
+              everything a new for a new language.
+
+DESIGN -
+    - Usually more upfront design is necessary to create good models and hierarchies.
+
+PROGRAMS CAN BE -
+    - Larger in size.
+    - Slower.
+    - More Complex. ( Development of classes and class hierarchies, using that classes
+      and its objects in an interfacing, application programme is easier)
+------------------------------------------------------------------------------------
+
+WHAT ARE CLASSES AND OBJECTS?
+
+CLASSES -
+    - blueprints from which objects are created.
+    - an user-defined data-type.
+    - has attributes (data)
+    - has methods (member functions)
+    - can hide data and methods.
+    - provides a public interface. ( attributes and data available for users to access
+      and call)
+      e.g. - Account, Employee, Image, std::vector, std::string.
+
+OBJECTS -
+    - are created from classes.
+    - represent a specific instance of a class.
+    - can create many, many objects.
+    - each has its own identity.
+    - each can use the defined class methods.
+    
+      e.g. Account objects-
+        - Piyushs_Account is an instance of `Account` class.
+        - Franks_Account is an instance of `Account` class.
+        - Each has its own balance, can make deposits, withdrawls etc.
+      
+      DECLARATIONS - 
+      Account piyushs_Account;
+      Account Franks_Account;
+--------------------------------------------------------------------------------------------
+
+DECLARING A CLASS AND CREATING OBJECTS
+
+SYNTAX -
+    class ClassName{  // class is a reserved keyword, convention to use camel case for className
+    // with first letter being capital
+        //declarations;
+    };
+    e.g.
+    class Player{
+        //class Attributes / Instance's Variables
+        std::string name;
+        int health;
+        int xp;
+        // methods;
+        void talk(std::string text_to_say);
+        bool is_dead();
+    }
+    
+CREATING OBJECTS THAT ARE INSTANCES OF CLASS -
+    Player Piyush;  // Same as Primitive Types
+    Player Hero;
+    // we can also create pointer to objects
+    Player* enemy = new Player();
+    delete enemy;
+    // don't forget to release memory with delete.
+    
+    - Once we have a class we can use as any other primitive type -
+        - to create its pointers
+        - to create its arrays
+        - to create its vectors
+    
+NOTE -
+    - Going forward from C++11 you can actually initialize class attributes insde the class body
+      right where you are declaring them. Note, this is different from using a constructor.
+---------------------------------------------------------------------------------------------
+
+ACCESSING CLASS MEMBERS
+
+    - WE CAN ACCESS - 
+        - Class Attributes
+        - Class Methods
+          For specific instance of a class.
+    - Some class members will not be accessible
+    - We need an object to access instance variables.
+    
+    1. IF WE HAVE AN OBJECT -
+        - Using the dot operator.
+          Account piyush_account;
+          piyush_account.balance;
+          piyush_account.deposit(1000.0);
+    
+    2. IF WE HAVE A POINTER TO AN OBJECT -
+        a. Dereference the pointer and then use the dot operator.
+           Account* piyush_account = new Account();
+           (*Piyush_account).balance;
+           (*Piyush_account).deposit(10000.0);
+        
+        b. Use the member of pointer operator (arrow operator) `->`
+           piyush_account->balance;
+           piyush_account->deposit(1000.00);
+------------------------------------------------------------------------------------------
+
+ACCESS MODIFIERS -
+
+PUBLIC:
+    - Accessible Everywhere.
+PRIVATE:
+    - Accessible only by members of the same class or friends of the class.
+PROTECTED:
+    - same as private for access, different behaviour while inheriting one class from
+      another.
+
+NOTE -
+    - By default if no access modifiers are used, everything within the class will be PRIVATE.
+----------------------------------------------------------------------------------------------
+
+IMPLEMENTING MEMBER METHODS -
+    - Very similar to how we implement functions.
+    - Memvber methods have access to other members of the class - so you don't need to pass
+      attributes as arguments.
+    - Can be implemented inside the class declaration byt then they will be implicitly inline
+      and those method declarations which can't be made inline will have to be implemented
+      outside of function
+    - Can be implemented outside of the class declaration.
+        - return_type Class_Name::method_name(parameter list){
+            // body
+          }
+    - Since you can declare functions inside class body and have them implemented outside,
+      you can separate specification from implementation.
+      - .h file for the class declaration(specification)
+      - .cpp file for the class implementation
+
+1. INSIDE THE CLASS DECLARATION -
+    
+    class Account{
+        private:
+            double balance;
+        public:
+            void set_balance(double amnt){
+                balance = amnt;
+            }
+            double get_balance(){
+                return balance;
+            }
+    };
+
+2. OUTSIDE THE CLASS DECLARATION -
+    class Account{
+        private:
+            double balance;
+        public:
+            void set_balance(double amnt);
+            double get_balance();
+    };
+    void Account::set_balance(double amnt){
+        balance = amnt;
+    }
+    double Account::get_balance(){
+        return balance;
+    }
+    
+    Note - While separating declaration and implementation, what you do is write all class declaration
+    in .h file. e.g. the declaration of Account clas from line 210 to 216 in Account.h file
+    and implementation in .cpp file with same name, i.e. lines from 217 to 222 in Account.cpp file
+-------------------------------------------------------------------------------------------------------
+
+INCLUDE GUARD -
+    - Before we use any header file with #include, we need to make sure that it is included only once
+      in the entire program (since other header files might be including it as well) otherwise the
+      compiler will see multiple declarations and will give an error.
+    - To make sure that compiler will process a header file only once, no matter how many times it has
+      been told to include to preprocessor directive, we use include guard.
+      
+      #ifndef _ACCOUNT_H_ // IF NOT DEFINED
+      #define _ACCOUNT_H_
+    
+      // Account class Declaration
+    
+      #endif
+      
+    - The include guard is just a sereis of preprocessor directives, #ifndef, #define and #endif
+    - #ifndef _ACCOUNT_H_ checks if this identifier has already been defined aka _ACCOUNT_H_ here.
+    - if the respective identifier has already been defined, the preprocessor deletes all the inbetween
+      code and jumps to #endif skipping all avoiding duplicate includes of the same code.
+    - You can use any symbol name but using some combination of header file name, underscore and H is
+      the convention for that #ifndef and #define identifier.
+    
+    OR
+    
+    - Some compliers support #progma once directive, that has the same effect as the include guard above,
+      though not every compiler supports this directive command.
+      
+      Account.h
+      #progma once
+      class Account{
+          private: double balance;
+          private: void set_balance(double amnt); double get_balance();
+      };
+      
+      Account.cpp - contains implementations
+      #include "Account.h"
+      void Account::set_balance(double amnt){ balance = amnt; };
+      double Account::get_balance(){ return balance; }
+    
+    - NOTE -
+        - The "" with #include tells that header files are local to project and then preprocessor knows
+          where to find that file, where as <> with #include tells that these are standard, aka system 
+          header files and then it knows that it shouldn't be looking in local directory for them.
+        
+        - #include <iostream>
+          #include "Account.h"
+          // it's important that we only ever include .h files and never .cpp files
+          // the moment a .h file is included, preprocessor search for .cpp file with same name
+          // and links it to program automatically
+          int main(){
+              Account Piyush_Account;
+              Piyush_Account.set_balance(1000);
+              double balance = Piyush_Account.get_balance();
+              std::cout << balance << std::endl; // 1000.00
+              return 0;
+          }
+        
+        - Seperating specification from implementation helps it make easy to see structure and interface,
+          facilities and features provided in a library without all the technical aspects of the implementation
+          getting in between
+-----------------------------------------------------------------------------------------------------------------
+
+CONSTRUCTOR AND DESTRUCTOR
+
+CONSTRUCTOR -
+    - Special member method.
+    - Invoked during object creation.
+    - Useful for initialization.
+    - Same name as the class.
+    - Without any return type.
+    - Can be overloaded.
+
+DESTRUCTOR -
+    - Special member method.
+    - Same name as class preceeded with a tide `~`.
+    - Invoked automatically when an object is destroyed.
+    - No return type and no parameters.
+    - Can't be overloaded, only one destructor per class.
+    - Useful to release memory and other resources.
+    - Destructor is invoked when an object goes out of scope, or when we delete an object or a pointer to
+      an object.
+
+THE DEFAULT CONSTRUCTOR -
+    - aka the constructor that doesn't expect any arguments.(with having no parameters or having default values
+      to all parameters).
+    - Also called as no-args constructor.
+    - If you don't write any constructor at all for a class, then C++ will generate a default constructor for
+      that class automatically that does nothing.
+    - Called when you instantiate a new object with no arguments. e.g.
+      Account piyush_accnt;
+      Account* Accnt = new Account();
+    - You can write your own default constructor that does something.
+    - IMP NOTE -
+        - Once you define any constructor for the class, the C++ will not generate no-args default constructor
+          for the class. You have to declare it yourself explicitly if you need it.
+----------------------------------------------------------------------------------------------------------------
+
+OVERLOADING CONSTRUCOTRS -
+    - Classes can have as many constructors as necessary. All rules of overloading apply i.e. -
+    - Each must have a unique signature (without considering return type).
+    - Default constructor is no longer generated automatically once any constructor is delcared.
+----------------------------------------------------------------------------------------------------------------
+
+CONSTRUCTOR INITIALIZER LISTS -
+    - So far, all data members' values have been set in the constructor's body.
+    - Other members have been set to values directly in class declaration.
+    - That is they were already initialized to some value before constructor body was called.
+    - Therefore, it's technically isn't initialization but reassignment when a constructor was called to
+      create an instance of the class.
+    
+    CONSTRUCTOR INITIALIZATION LIST -
+    - Doesn't change anything with the class attributes that were initialized in class body.
+    - initializes member attributes even before constructor body is called.
+    - are more efficient.
+    - Initialization list immediately follows the parameter list;
+    - Initialize the data members as the object is created!
+    - Order of initialization is independent of the order that is specified in the initialization list,
+      the arguments gets initialized in the same order they are declared in the class's body.
+    - It's true initialization.
+    
+    e.g.
+    
+    // Consider a class Player with name, xp, health as its attributes
+    // Previous way
+    Player::Player(std::string name_val){
+        name = name_val;
+        health = 100;
+        xp = 0;
+    }
+    // Better way with initializer list
+    Player::Player(std::string name_val):
+        name{name_val}, health{0}, xp{0}{
+        // the order of initialization remains same as that of declaration of inside class body
+        // even if you change the order here. e.g. :health{0}, xp{0}, name{name_val}{}
+    }
+-----------------------------------------------------------------------------------------------------------
+
+DELEGATING CONSTRUCTORS -
+    - Often the code for various constructors are very similar.
+    - Duplicated code most often leads to errors. (You have to make sure that any changes are reflected
+      properly at all necessary places)
+    - C++ allows delegating constructors -
+        - one constructor can call another constructor in the initialization list.
+        - avoids duplicating code.
+    e.g.
+    Player::Player(std::string name_val, int health_val, int xp_val):
+        name{name_val}, health{health_val}, xp{xp_val}{
+        // body
+    }
+    Player::Player():
+        Player{"None", 100, 0}{ // all body of delegated constructor will be called along with its initialization list
+        // body
+    }
+    Player::Player(std::string name_val):
+        Player{name_val, 100, 0}{
+        // body
+    }
+    
+    - IMP -
+        - You can't call another constructor from a body of a constructor for delegating process.
+        - Whenever using delegating constructors, they are stacked the same way functions are stacked on function
+          call stack.
+        - Whenever constructor is delgating to another, tha another constructor is executed completely, not just the
+          initialization list of the constructor the work is delegated to.
+----------------------------------------------------------------------------------------------------------------------
+
+CONSTRUCTOR PARAMETER AND DEFAULT VALUES -
+
+DEFAULT CONSTRUCTOR PARAMETERS -
+    - Can often simplify our code and reduce the numer of overloaded constructor
+    - Samre rules apply as with non-member functions
+    e.g.
+      replacing all constructor declarations for class player with
+      Player::Player(std::string name_val = "None", int health_val = 100, int xp_val = 0):
+        name{name_val}, health{health_val}, xp{xp_val}{
+        // body
+    }
+-----------------------------------------------------------------------------------------------------------------------
+
+COPY CONSTRUCTOR -
+    - When objects are copied C++ must create a new object from an existing object.
+    - When is a copy of an object is made?
+        - Passing object by value as an arguments
+        - Returning an object from function as a value/ by value.
+        - Constructing one object based on another object of the same class.
+    - C++ must have a way of accomplishing this so it provides a compiler defined copy constructor if you don't.
+        - Copies the value of each data member to the new object
+        - default memberwise copy.
+        - perfectly fine in many cases.
+        - Beware if you have a pointer data member.
+            - Pointless will be copied
+            - Not what it is pointing to
+            - This is called shallow copy.
+    
+    - BEST PREACTICES -
+        - Provide a copy constructor when your class has a raw pointer member.
+        - Always the copy constructor with a const ref parameter.
+          if you don't, that means the argument was passed by value, which will invoke the copy constructor
+          but you are in copy constructor, that means the copy constructor will be called repeatedly recursively
+          indifinetly.
+        - Use STL classes as they already provide copy constructors
+        - Avoid using raw pointer data member if possible. ( Have specific ownership relationship that avoid
+          all pitfalls with raw pointers.)
+    
+    - DECLARATION -
+        - Type::Type(const Type& source);
+        e.g.
+          Player::Player(const Player& source);
+          Account::Account(const Account& source);
+--------------------------------------------------------------------------------------------------------------------
+
+SHALLOW COPYING WITH COPY CONSTRUCTOR -
+    - SHALLOW VS DEEP
+        - Consider a class that contains raw pointers as data members.
+        - Constructor allocates storage dynamically and initialize the pointer.
+        - Destructor releases the memory allocated by the constructor
+        - What happens in the default copy constructor?
+        
+        DEFAULT OR SHALLOW COPY CONSTRUCTOR
+        - Default is shallow, shallow not necessarily default.
+        - Each member is copied sequentially. (memberwise copy)
+        - Each data member is copied from the source object.
+        - The pointer is copied NOT what is points to (shallow copy)
+        PROBLEM
+            - When we release the storage in the destructor, the other object still refers to the same released
+              storage!
+----------------------------------------------------------------------------------------------------------------------
+
+DEEP COPYING WITH COPY CONSTRUCTOR -
+    - Create a copy of pointed data.
+    - Each copy (instance) will have a pointer to a unique storage on heap.
+    - Deep copy when you have a raw pointer as a class data member.
+-----------------------------------------------------------------------------------------------------------------------
+
+MOVE CONSTRUCTOR -
+    - Move constructor and move semantics were introduced in C++11 standards.
+    - Sometimes when we execute code, the compiler creates unnamed temperory values;
+      int total{0};
+      total = 100 + 200;
+        - 100 + 200 is evaluated and 300 stored in an unnamed temp value.
+        - the 300 is then stored in the variable total.
+        - then the temp is discarded.
+        - The same applies with objects as well.
+    - rvalue objects are the objects that move semantics addresses.
+    
+    WHEN IS IT USEFUL?
+        - Sometimes the copy constructor are called many times automatically due to the copy semantics of C++
+        - Copy constructors doing deep copying can have a significant performance bottleneck if there's data
+          stored on the heap and everytime its copy is made when the original owner (object) is destroyed right
+          after the copying finishes.
+        - That means you can simply move the ownership of the storage on the heap to new object, null out the pointers
+          that point to heap from source object and let the destroyer for source object invoke and delete it.
+        - This way you won't be copying the data on heap unecessarily every time rvalues are moved into a addressable
+          object.
+        - Move constructor moves the `data` on the heap rather than copying it.
+        - Optional but recommended when you have a raw pointer.
+        - Copy elision - C++ compilers may optimize copying away completely whenever it is unecessary.
+          (RVO- Return Value Optimization)
+    
+    RVALUE REFERENCE -
+        - Used in move semantics and perfect forwarding.
+        - Move semantics is all about r-values only.
+        - Used by move constructor and move assignment operator to efficiently move an object rather than copy it.
+        - Rvalue reference operator `&&`
+        e.g.
+          int x {100};
+          int& l_ref = x; // l-value reference
+          l_ref = 10; // change x to 10
+          int&& r_ref = 200; // r-value ref
+          // expression on right `200` creates a temperory variable with value 200 which is initially unaddressable
+          but with r value ref r_ref after assignment, it becomes addressable with name r_ref.
+          r_ref = 300; // changes r_ref to 300, the same temperory variable which was created on line 496
+          int&& x_ref = x; // compiler error
+          // you can only have a Rvalue ref to objects/variables only having r value and not any l value, `x` is a lvalue
+        - rvalue references chagne the r value of non addressable temporary variables.
+    
+    LVALUE REFERENCE PARAMETERS -
+        int x{100};
+        // x has a lvalue, its memory address
+        void func(int& num); // num a reference to an int
+        func(x); // num and x now have the same memory location. i.e. same l and r values
+        // if two names have same lvalues, their rvalues automatically are not the same, are just exactly the one thing.
+        funct(200); // 200 is an r-value stored in a temp variable which is not addressable, gives an error
+        error: cannot bind non-const lvalue reference of type `int&` (aka num) to an r-value of type `int` (aka 200)
+    
+    RVALUE REFERENCE PARAMETERS -
+        int x{100}; // x has both r and l values.
+        void func(int&& num); // r_value ref
+        func(200);
+        // 200 is sotred in a non-addressable temp variable
+        The rvalue of `num` is now the rvalue of that same temporary variable with rvalue `200`
+        i.e. now, num has lvalue same as of that temp variable which was initially non addressable but now is through num
+        
+    - Move constructor are exactly like shallow copy constructors. i.e. they copy the address stored in raw pointers but what
+      makes them different is that they null out the pointers that own those data from the original source object, so they
+      don't have to perfrom deep copy and when the destructor for the source object is called, it doesn't release the same
+      heap memory which now the new object owns.
+    
+    - DECLARATION
+        Player::Player(Player&& source):
+            ptr{source.ptr}{
+            source.ptr = nullptr;
+        }
+        
+        Player New = Player{"New", 10, 40}; // argument list
+                     // a r-value object without any name to address it. a temporary non-addressable object.
+------------------------------------------------------------------------------------------------------------------------------
+
+`this` POINTER
+    - `this` is a reserved keyword.
+    - Contains the address of the current object. So it's a pointer to the current object.
+    - current object - the object for the method is called right now.
+    - Can only be used in class scope.
+    - All members access is done via the `this` pointer behind the scenes.
+      e.g.
+      class Account{
+          double balance;
+          public:
+          void set_balance(double amnt){ balance = amnt; }
+          // is rewritten behind the scenes by compiler as
+          void set_balance(double amnt){ this->balance = amnt; }
+    - Can be used by the programmer
+        - To access data members and methods.
+        - To determine if two objects are the same. if(this == &obj)
+        - Can be dereferenced (*this) to yield the current object.
+        - To deambiguate identifier use
+        void Account::set_balance(double balance){
+            balance = balance; // which is which?
+        }
+        // both are formal parameters because of scope rules and non of them refer to the this->balance the
+        // data member of the object.
+        
+        // right way - 
+        void Account::set_balance(double balance){
+            this->balance = balance;
+        } // this->balance  => data member,
+          // balance => formal parameter.
+        - To Determine Object Identity.
+            - Sometimes it's useful to know if two objects are the same objects.
+              double Account::compare_bal(const Account& other){
+                  if(this == &other){
+                      std::cout << "The same object" << endl;
+                      return 0;
+                  }
+              }
+        - the `this` pointer comes in handy while overloading assignment operator for a certain class.
+---------------------------------------------------------------------------------------------------------------------
+
+USING `const` WITH CLASSES-
+    - Pass arguments to class member methods as const
+    - We can also create const objects.
+    - What happens if we call member functions on const objects?
+    - Search const correctness.
+        const Player Villian{"Villian", 100, 55};
+        // villian is a const object so its attributes can't change.
+        // It's obvious, you can't call methods that could change const objects.
+        void display_name(const Player& p){
+            cout << p.get_name() << endl;
+        }
+        // compiler doesn't know that get_name() method does or does not change the object p
+        // all it sees in its signature is its return type, maybe something like this -
+        // std::string Player::get_name();
+        display_name(Villian);
+        // so, the compiler gives an error here since it thinks the method can potentially change the object p
+    - So how do you call a method that doesn't change any attributions on a const object?
+        - const methods.
+        e.g.
+        class Player{
+            Private:
+                // SOME CODE ...
+            public:
+                std::string get_name() const;
+                //                     ----- -> TELLS COMPILER THAT THIS METHOD WON'T AND ISN'T SUPPOSED TO CHANGE
+                //                     OBJECT ON WHICH IT IS CALLED UPON.
+                // SOME CODE ...
+        };
+        const Player Villian{"Villain", 100, 55};
+        std::cout << Villian.get_name() << std::endl;
+        // works fine now
+        Villian.set_name("Nice Guy"); // ERROR
+        // EVERYTHING WORKS THE WAY IT IS SUPPOSED TO BE.
+--------------------------------------------------------------------------------------------------------------------
+
+STATIC CLASS MEMBERS-
+    - Class data members can be declared as static.
+        - A single data member that belongs to the class, not the object.
+        - Useful to store class-wide information.
+    
+    - Class functions can be declared static.
+        - Independent of any objects.
+        - Can be called using the class name.
+        - A static member function has access to only static data members.
+          It can't access data members owned by a specific instance of class.
+    
+    - You can access these public static members as Class_Name::Member_Name;
+    - All the members of the class still have the access to static private members.
+    
+    - IMP NOTE - You can't initialize non-const static members in class definition. You have to just declare/specify
+      them in class definition and then you need to write initialization later outside of class declaration.
+-----------------------------------------------------------------------------------------------------------------------
+
+STRUCT VS CLASS -
+    - structures are essentially the same as classes except that struct members are public by default while
+      class members are private by default. This is the only difference between them.
+    - In c, structs only handle data attributes but in C++, they also like classes can have methods implemented.
+
+IF BOTH OF THEM ARE ESSENTIALLY THE SAME WITH SUCH A MINUTE DIFFERENCE AND THEY ARE COMPLETELY REPLACEBLE WITH EACH
+OTHER, WHICH ONE TO USE WHEN?
+
+STRUCT-
+    - Use struct for passive objects with public access. Therefore they are coherent with structs in C.
+    - Don't declare methods in structs though you can to make them more coherent with c. This way
+      you will avoid confusion for c devlopers who leanrnt C++ and now are working on some production code.
+
+CLASS -
+    - Use class for active objects with private access.
+    - Implement member methods as needed.
+---------------------------------------------------------------------------------------------------------------------
+
+FREIND OF CLASS -
+    - A FUNCTION or CLASS that has access to private class member of another class with which it's friends with.
+    - And that function or class is NOT a member of the class it is accessing.
+    - The Friend function can be -
+        - Regular non-member function.
+        - Method of another class.
+    
+    - IN C++, FRIENDSHIP MUST BE GRANTED NOT TAKEN.
+        - Declared explicitly in the class that it is granting friendship - 
+            - Declared in the function prototype with the keyword friend.
+    
+    - FRIENDSHIP IS NOT SYMMETRIC IN C++
+        - Must be explicitly granted.
+        - if A is a friend of B, it does not imply that B is also a friend of A unless explicitly specified.
+    
+    - FRIENDSHIP IS NOT TRANSITIVE.
+        - Must be explicitly granted.
+        - if A is friend of B and
+        - B is friend of C then
+        - A is not the friend of C or C friend of A unless specified.
+    
+    - FRIENDSHIP IS NOT INHERITED.
+----------------------------------------------------------------------------------------------------------------------
+
+OPERATOR OVERLOADING -
+    - TO make operators work with user defined classes/types the way user wants. C++ allows overloading of several
+      C++ operators.
+      
+    - Using traditoinal operators such as +,=,*... etc. with user defined data types
+        - Allows the user defined types to behave similar to built-in types.
+        - Can make code more readable and writable.
+    
+    - NOT done automatically ( except for assignment operator ). They must be explicitly defined.
+    
+    SUPPOSE WE HAVE A NUMBER CLASS THAT MODELS ANY NUMBER.
+    - Using Functions, operations would look like -
+        Number result = multiply(add(a,b), divide(c,d));
+    - Using methods, operations would look like -
+        Number result = (a.add(b)).multiply(c.divide(d));
+    - Using overloaded operators -
+        Number result = (a+b)*c/d;
+    
+    OPERATORS THAT CAN'T BE OVERLOADED IN C++ -
+        1. ::       Scope Resolution.
+        2. :?       Conditional
+        3. .*       Pointer to Member
+        4. .        Dot
+        5. sizeof   sizeof
+
+
+SOME BASIC RULES -
+    - Precedence and associativity can't be changed.
+    - `arity` can't be changed. i.e, a binary operator will always be a binary operator.
+    - Can't overload operators for primitive types.
+    - Can't create new operators.
+    - [], (), -> and the = (assignment) operator must be declated as member methods.
+    - Other operators can be declared as either member methods or global functions.
+------------------------------------------------------------------------------------------------------------------
+
+COPY ASSIGNMENT OPERATOR-
+    - C++ provides default assignment operator used for assigning one object to another.
+      Mystring s1{"Piyush"};
+      Mystring S2 = S1; // NOT ASSIGNMENT, Same as Mystring S2{s1};
+      // copy constructor is invoked here.
+      S2 = s1; // assignment.
+      
+    - Default - memberwise assignment, shallow copy.
+    - if we have raw pointer data member, we must employ deep copy semantics in overloaded assignment operator.
+    
+OVERLOADING THE COPY ASSIGNMENT OPERATOR (DEEP COPY) -
+    - SYNTAX -
+        Type& Type::operator=(const Type& rhs);
+        // the assignment operator returns the ref of this object again to enable chained assignment.
+        // the new object that may be assigned by this returned reference is garunteed to be at either same scope
+        // level or inner scope level.
+        // e.g. obj1 = obj2 = obj3
+        // first, obj2 = obj3 executes returning a ref to obj2.
+        // here obj1 is garunteed that while this line and I'm saying for this assignment line only
+        // that obj2 exists and is accessible to the scope where obj1 is and hence the chained assignment can happen
+        // by just returning a ref and we don't have to return a object again.
+        // returning a whole object again would invoke copy constructor again to create a temporary object rvalue.
+        e.g.
+        Mystring& Mystring::operator=(const Mystring& rhs);
+        s2 = s1; // we write this
+        s2.operator=(s1); // operator method is what called behind the scenes.
+        
+    - 1. CHECK FOR SELF ASSIGNMENT -
+        - if(this == &rhs) return *this; // return the object, the return type takes care of returning only reference
+    - 2. DEALLOCATE STORAGE FOR ANY this->ptr since we are overwriting it
+        - in statement s2 = s1; s2 already exists and if the class implements storage on heap, it has some data
+          on heap already and a raw data pointer maybe is pointing to it.
+        - Before we perform the assignment, we need to make sure that we release this storage first since if we don't
+          it'll cause memory leak.
+        - Once this step is done, we are ready to allocate new storage on heap for s2 and then perform the deep
+          copy
+    - 3. ALLOCATE STORAGE FOR THE DEEP COPY AND THEY COPY THE DATA THAT'S POINTED TO FROM RHS OBJECT.
+    - 4. TO ALLOW FOR CHAINED ASSIGNMENT, RETURN A DEREFERENCED this WHICH IS RETURNED AS REF.,
+         THAT WILL BE PASSED TO NEXT operator= METHOD AS REF ARGUMENT. i.e. return *this;
+-----------------------------------------------------------------------------------------------------------------------
+
+MOVE ASSIGNMENT OPERATOR -
+    - You an choose to overload the `move` assignemtn operator to handle non addressable r values
+      e.g. Mystring s3;
+      s3 = Mystring{"Temp string"};
+    - Here, the rhs is a temporary object with no name to address it, it has some data stored on heap, now
+      if you don't provide a move semantics for your Mystring class, what will happen is first the temporary
+      object will be created with data on the heap. Deep copy semantics will be invoked with copy assignment operator
+      which will cause another area on the heap to be allocated, copy of data on the heap will be done, and other
+      steps as we saw earlier, then destructor for the temporary object will be invoked which will release its data
+      from the heap
+    - what happened here is that a copy of the data on the heap is done unecessarily. The temp object is going to be
+      destroyed immediately after assignment so it won't be owning the data it stored on the heap. We are wasting
+      efforts performing deep copy here when we could have just copied the pointer from temporary object and nulling
+      out temporary object's pointer to prevent from that data being released when its destructor is envoked.
+    - This way, the object that was being assigned to, will not have to create a new storage on the heap, perform
+      deep copy. it just needs to take the ownership of the area on heap and relieve ownership of temp object.
+    - If we have a raw pointer implemented in our class, we should overload the assignment operator for efficiency.
+    Syntax -
+      Type& Type::operator=(const Type&& rhs);
+      // * IMP - always return *this; that will cause the ref of this newly assigned object to be returned,
+      // if you return rhs; // first of all it is declared const Type&& and return type is not const so the conversion
+      // will fail
+      // and even if you state the return type is const Type& ( which you should not do, you don't always chain the
+      // assignments, maybe you'll perform some operation on returned ref from assignemnt.) the temp object
+      // is destroyed immediately so the referencing will fail
+      Mystring s1; // constructing
+      s1 = Mystring{"Piyush"}; //move assignment is envoked since rhs is rvalue object
+      // first a constructor for temp object then move assignement operator is called
+      s1 = "Mahamuni";
+      // Same thing happens, We can't assign a differently typed value to a differently typed variable / object.
+      // the compiler then first tries to see if it can convert the c-style string "Mahamuni" to Mystring
+      // it may find a constructor that takes in c-style string as parameter and then will call it.
+      // or it may find a constructor that takes in std::string as parameter and it knows how to convert c-style
+      // string to std::string by invoking its constructor first and then passing that std::string to the respective
+      // constructor of Mystring
+      // After that the move assignment operator is called.
+      
+    - The semantics is same as move constructor except -
+        - You check for self assignment.
+        - You release the storage currently occupied by this object on the heap before moving.
+-----------------------------------------------------------------------------------------------------------------
+
+OVERLOADING OPERATORS AS METHODS.
+
+UNARY OPERATORS AS MEMBER METHODS-
+    ++, --, -(Unary negation), !
+    // Yup, `-` represents two operators, binary subtraction a-b and
+    // unary negation -a, -b
+    
+    SYNTAX -
+        Return_Type Type::operator`op`();
+        e.g.
+        Number Number::operator-() const; // note empty parameter list, since it is implemented as method
+        // it's only operand is this object
+        // the const at end declares that this method doesn't change any attributes of this object.
+        Number Number::operator++(); // pre increment
+        Number Number::operator++(int); // post increment, declaring one dummy parameter as int to abide
+        // by overloading and remove ambiguity between calls of post and pre increment, same for post and pre
+        // decrement.
+        
+        bool Number::operator!() const;  // Since used in logical expression, returns a bool
+        Number n1{100};
+        Number n2 = -n1; // n1.operator-(), rhs is a temporary object returned by this method
+        n2 = ++n1; // n1.operator(), pre
+        n2 = n1++; // n2.operator(int), post
+
+BINARY OPERATORS AS MEMBER METHODS-
+    +, -, ==, !=, <, >, ...
+    Syntax -
+        Return_Type Type::operator`op`(const Type& rhs);
+        e.g.
+        Number Number::operator+(const Number& rhs) const; // this needs to stay const and rhs too
+        Number Number::operator-(const Number& rhs) const;
+        bool Number::operator==(const Number& rhs) const;
+        bool Number::operator<(const Number& rhs) const;
+    
+    - OVERLOADING + OPERATOR AS METHOD OF Mystring CLASS -
+        Mystring larry{"Larry"}; // constructor taking a `const char*` typed value as input argument.
+        Mystring moe{"Moe"};
+        Mystring stooges{"is one of the 3 stooges"};
+        Mystring result = larry + stooges; // rhs is replaced with
+                        // larry.operator+(stooges). and it works fine
+        result = moe + " is also a stooge";
+                 // moe.operator+(" is also a stooge");
+        // but the method operator() expects a `const Mystring&` and here it received a c style string
+        // aka `const char*`. The compiler here will first check if there's a constructor that can take
+        // a `const char*` for Mystring class and it does find it since we implemented one
+        // so this assignment expression also works fine.
+        
+        result = "Moe" + stooges;
+        // ERROR,
+        // 1. c style string aka `const char*` doesn't have and can't have a overloaded + operator as method
+        // to handle a Mystring class as rhs.
+        // 2. "Moe" is not converted to Mystring object automatically here since the associativity of + is from
+        // left to right, it doesn't know which function to call and so it can't see its signature to be aware
+        // of the fact that it needs to convert `const char*` to Mystring by invoking constructor call
+-----------------------------------------------------------------------------------------------------------------
+
+OVERLOADING OPERATORS AS GLOBAL FUNCIONS-
+
+UNARY OPERATORS-
+
+    Return_Type operator`op`(Type& obj);
+    e.g.
+    Number operator-(const Number& obj); // unary negation
+    Number operator++(Number& obj); // pre, no const since it changes the object
+    Number operator++(Number& obj, int); // post
+    bool operator!(const Number& obj);
+    
+    - IMP NOTE -
+        You can't use both global and member functions at the same time since compiler won't be able to
+        figure out which one to use.
+
+BINARY OPERATORS -
+    - SYNTAX -
+        ReturnType operator`op`(const Type& lhs, const Type& rhs);
+        // using const since no binary operator changes the value of either rhs or lhs
+---------------------------------------------------------------------------------------------------------------------
+
+OVERLOADING STREAM INSERTION AND EXTRACTION OPERATORS -
+    - Use cases
+      e.g.
+      Mystring piyush{"Piyush"};
+      cout << piyush << endl; // piyush
+      Account piyush_accnt{"Piyush", 10000, "savings"};
+      cout << piyush_accnt << endl; // prints -
+      // Account Holder: Piyush,
+      // Balance: 10000
+      // Type: savings
+      cin >> piyush; // read data from console and do the necessary changes in object piyush
+      // to reflect that, here change the string "Piyush" to something else
+      cin >> piyush_accnt;
+      // read the data from console and change necessary attributes in object piyush
+      // here it could be name, balance, type or any combination of these.
+    
+    - These operators << and >> don't make sense to be implemented as member functions-
+        - Left operand must be a user defined class ( we might want to use it with streams so... won't work )
+          stream_obj << obj; // using obj of our class to insert into stream
+          stream_obj >> obj; // extracting info from stream to change attributes of obj
+          // in both cases those operators are replaced with such call -
+          // stream_obj.operator<<(obj) or stream_obj.operator>>(obj)
+          // so you need to implement these overloaded operatos as either members of that stream class
+          // or as global functions, you can't oveload these as members of your class.
+
+OVERLOADING `<<`
+    - SYNTAX -
+        std::ostream& operator<<(std::ostream& os, const Type& obj){
+            // code ...
+            return os;
+        }
+    - return the reference to the output stream that was initially passed in as argument for chained expressions
+      so we can keep inserting.
+      e.g.
+      Mystring piyush{"piyush"};
+      int a {10};
+      cout << piyush << 10 << endl;
+      
+OVERLOADING `>>`
+    - SYNTAX -
+        std::istream& operator>>(std::istream& is, Type& obj){ // type is not const since that object changes
+            is >> a;
+            is >> b;
+            is >> d;
+            // extract all required values form stream and use them as necessary
+            // The obj is catched here as `Type&` and not `const Type&` since we need change that object
+            // in place
+            return is; // return reference to is so that we can keep extracting.
+        }
+--------------------------------------------------------------------------------------------------------------------
+
+INHERITANCE -
+    WHAT IS INHERITANCE AND WHY IS IT USED?
+    - Provides a method for creating new classes from existing ones.
+    - The new class contains the data and behaviours of the existing class.
+    - Allow for reuse of existing class.
+    - Allow us to focus on common attributes among set of classes.
+    - Allows new classes to modify behaviour of existing classes to make it unique.
+        - Without actually modifying the original class.
+
+TERMINOLOGY AND NOTATIONS-
+    INHERITANCE -
+        - Process of creating new class from existing class.
+        - Reuse mechanism.
+    
+    SINGLE INHERITANCE -
+        - A new class is created from another `single` class.
+        
+    MULTIPLE INHERITANCE -
+        - A new class is created from two or more other classes.
+    
+    BASE CLASS ( PARENT / SUPER CLASS ) -
+        - The class being extended or inherited from.
+        - Here super means parent, but parent classes are more general and sub classes are more specific
+          with having more specific attributes and methods. The sense of use of words is opposite that of sets
+          while using these words - super and sub
+    
+    DERIVED CLASS ( CHILD/ SUB CLASS ) -
+        - The class being created from the base class
+        - Will inherit attributes and operations from base class.
+        
+    IS-A RELATIONSHIP -
+        - public inheritance
+        - Derived classes are sub-types of their base class.
+          e.g.
+          Savings account `is a` account
+          Player `is a` Person
+        - Can use a derived class object wherever we use a base class object.
+          e.g.
+          Person class has a global friend function `eat(Person& obj)`
+          Plyaer class is publically inherited from Person class
+          so you can pass a Player object to eat() and it will perform the respective task
+          on just the `Person` part of the Player object.
+          while passing such arguments of child class to parameter expecting parent class,
+          child part of that object is sliced away and only parent part of that object is passed on
+          and the block that recieves the passed object can only see parent part.
+        
+    GENERALIZATION -
+        - Combining similar classes into a single, more general class based on common attributes
+          (combination here refers to intersection of attributes and methods those various classes may have
+          not union)
+    
+    SPECIALIZATION -
+        - Creating new classes from existing classes providing more specialized attributes and/or operations.
+        
+    INHERITANCE OR CLASS HEIRARCHIES -
+        - Organization of our inheritance relationship
+        e.g.
+        A : root class, not being inherited from any other class
+        B is derived from A
+        C is derived from A
+        D is derived from C
+        E is derived from D
+        
+        above statements will imply =>
+        ----------------------------------------
+        1. Specialization ->
+        A -> B
+        A -> C -> D -> E
+        ----------------------------------------
+        2. Generalization
+        B -> A
+        E -> D -> C -> A
+        ----------------------------------------
+        3. A is not B or C or D or E (or is inclusive)
+        4. B is not C or D or E
+        5. C is not D or E or B
+        6. D is not E or B
+        7. E is not B
+        8. B is an A
+        9. C is an A
+        10. D is a C ( and since C is an A), D is an A (Inheritance is transitive).
+        11. E is a D, a C, an A
+-------------------------------------------------------------------------------------------------------------------
+
+INHERITANCE VS COMPOSITION -
+    
+    PUBLIC INHERITANCE VS COMPOSITIONS
+        - Both allow reuse of existing classes.
+        - Public Inheritance -
+            - establishes "is a" relationship between classes.
+            - Employee "is a" Person.
+            - Checking_Account "is a" Account.
+            - Circle "is a" Shape.
+        - Composition -
+            - establishes "has a" relationship.
+            - Person "has a" Account
+            - Player "has a" Special_Attack
+            - Circle "has a" Location
+    
+    - Composition should be made at most general appropriate class and the composition is then inherited by all of its
+      derived class.
+      e.g. A Person should have an Account
+      so by inheritance, all Employees and Players will also have an Account
+      
+    - When we model class data members, we use compositoin (i.e. all the objects are primitive types a class
+      declares inside its body so that it's objects owns it)
+      When drawing class diagrams, we don't draw primitive types in composition diagrams.
+----------------------------------------------------------------------------------------------------------------------
+
+DERIVING CLASSES FROM EXISTING CLASSES.
+
+C++ DERIVATION SYNTAX ANS SEMANTCIS:
+    
+    class Base{
+        // Base class memebers;
+    };
+    class Derived: access_modifier Base{
+        // Derived class members;
+    };
+    Access specifiers can be: public, private or protected. if not specified, private inheritance is done by
+    default.
+----------------------------------------------------------------------------------------------------------------------
+
+TYPES OF INHERITANCE IN C++
+    
+    PUBLIC:
+        - Most Common
+        - Establishes `IS-A` relationship between Derived and Base class.
+    
+    PRIVATE AND PROTECTED:
+        - Establishes `Derived class HAS A Basee class` relationship.
+        - `is implemented in terms of` relationship.
+        - Different from compositions.
+    
+    PROTECTED MEMBERS AND ACCESS MODIFIERS- 
+        The protected class member modifier
+        class Base{
+            protected:
+            // protected base class members.
+            int pr;
+            private:
+            int p;
+            ....
+            public:
+            int pu;
+            void set_p(int a){ p = a; }
+            //...
+        };
+        - Accessible from the base class itself.
+        - Accessible from the classes derived from Base.
+        - Not accessible by objects of Base or Derived.
+        
+                                    // access modifiers
+        class derived_class_name : public/protected/private base_class_name {
+        // class definition
+        // doesn't matter what type of inheritance is used,
+        // base class's private attributes can't be directly accessed from here. i.e. definition of derived class
+        // base:: p isn't accessible here
+        
+        // if you invoke any accessible attributes of class Base that do some processing on private attribute,
+        // you get indirect access to that attribute
+        
+        // You get direct access to public and protected attributes of base class
+        // base::pr and base::pu are both accessible here
+        base::pr, pr, I can use either to access
+        
+        };
+    
+    - IMP POINTS
+        - once derived either by private, protected or public inheritance, you lose the access to
+          private attributes of base class in the body of derived class.
+        - You still get access to base classes other i.e. public and protected attributes directly in the
+          derived class.
+        - Though you lose the direct access to private attributes of base class in derived class, they are still
+          inherited in derived class.
+        - Private and protected members aren't directly accessible from derived class or by their objects with
+          scope resolution `::`, pointer to member `->`, dot `.` operator.
+        - PUBLIC INHERITANCE -
+            - public and protected attributes of base class still remain public and proetected resp. in derived.
+            - private attributes are inherited but aren't accessible either in class body or by instances of 
+              derived class.
+    
+        - PROTECTED INHERITANCE -
+            - public attributes become protected, protected attributes remain protected.
+            - private attributes are inherited but aren't accessible either in class body or by instances of derived
+              class.
+        - PRIVATE INHERITANCE -
+            - public and protected attributes of base class become private attributes of derived class.
+            - private attribtues of base class are inherited but aren't accessible in derived class's body or by
+              its instances.
+-----------------------------------------------------------------------------------------------------------------------
+
+CONSTRUCTORS AND DESTRUCTORS WITH INHERITANCE
+
+CONSTRUCTOR AND CLASS INITIALIZATION:
+    - A derived class inherits ( except few of base classes attributes (methods and data) ) attributes
+      from base class.
+    - The base part of the derived class MUST initialized BEFORE the derived class ( Since, derived class's
+      construction may depend upon base class's attributes being initialized before.)
+    
+    - When a derived object is created
+        - Base class constructor executes then
+        - Derived class constructor executes.
+    
+DESTRUCTORS
+    - Class destructors are invoked in reverse order as constructors.
+    - The derived part of the Derived class MUST destroyed first ( since it may be using Base class resources and
+      and doing things other way around may lead to fatal errors.) BEFORE the base class destructor is invoked.
+    
+    - When a deirved object is destroyed
+        - Derived class destructor executes then
+        - Base class destructor exectues
+        - Each destructor should free resources allocated in its own constructors.
+        
+IMP POINTS -
+    - A Derived class does NOT inherit
+        1. Base class constructor
+        2. Base class destructor
+        3. Base class overloaded assignment operator
+        4. Base class friend functions.
+    - However, the base class constructor, destructor, and overloaded assignment operators can be invoked from
+      derived classes using scope resolution - Base::attribute;
+    
+    - C++11 and forward, allows explicit inheritance of base `non-special` constructors with syntax -
+      using Base::Base;
+      this declaration statement can be written anywhere in the body of the derived class.
+      - Lots of rules involved, often better to define constructors yourself.
+----------------------------------------------------------------------------------------------------------------------
+
+PASSING ARGUMENTS TO BASE CLASS CONSTRUCTORS
+    - Q. How can we control exactly which Base class constructor is used?
+        - We can invoke the wichever Base class constructor we wish in the initialization list of the derived
+          class.
+        
+        - SYNTAX -
+          class Base{
+              public:
+                Base(); // no args constructor
+                Base(int); // int arg constructor
+                ...
+          };
+          Derived::Derived(int x): Base(x), {optional initializers for derived} {
+              // body of int arg Derived constructor
+          }
+        
+        - If no base class cnostructor is mentioned explicitly, the default no args constructor is called
+          for the initialization of base part of the instance of the derived class.
+-----------------------------------------------------------------------------------------------------------------------
+
+COPY/MOVE CONSTRUCTORS AND OVERLOADED `=` OF BASE CLASS WITH DERIVED CLASSES -
+    - Copy/Move constructor and Copy/Move `=` operators are not inherited from Base class.
+    - You may not need to proved your own versions of these members.
+        - Compiler provided versions may be just fine.
+    - We can explicitly invoke the Base class versions from the derived class.
+
+COPY CONSTRUCTOR -
+    - Can copy Base copy constructor explicitly
+        - Derived object `source` will be sliced off of its all other parts but just `Base` class part
+    
+    - SYNTAX -
+        Derived::Derived(const Derived& other) : Base(other), {Derived initialization list}{
+            // code..                           //slicing takes place here when passing to base class const.
+        }
+    
+    - SLICING -
+        - Since `Derived` is a `Base`, you can pass anh Derived Instance into a method or function that expects
+          a Base and its Derived part will be sliced off while passing. ( slicing can cause problems in some cases )
+          
+    - Same logic applies for overloaded Move constructor.
+
+OVERLOADED COPY `=` -
+    class Base{
+        int value;
+    public:
+        // constructors
+        Base& operator=(const Base& rhs){
+            if(this!=&rhs){
+                value = rhs.value;
+            }
+            return *this;
+        }
+    };
+    class Derived{
+        int doulbed_val;
+    public:
+        // constructors
+        Derived& operator=(const Derived& rhs){
+            if(this!=&rhs){
+                Base::operator=(rhs);//Assign Base part
+                doulbed_val = rhs.doubled_val;
+                // assign derived part
+            }
+            return *this;
+        }
+    };
+    
+    - Move assignment works in similar manner
+--------------------------------------------------------------------------------------------------------------------
+
+IMP POINTS INHERITANCE AND COPY/MOVE CONSTRUCTOR AND OVERLOADED `=`
+    - Often you do not need to provide your own for Derived class.
+    - If you DO NOT provide them in Derived -
+        - Then the compiler will create them automatically and call the appropriatte base class's versions
+          at appropriate places in derived class.
+    - If you DO provide Derived versions -
+        - then you MUST invoke the Base class versions explicitly yourself.
+    - BE CAREFUL WITH RAW POINTERS.
+        - Especially if Base and Derived each have raw pointers.
+        - Provide them with deep copy semantics (likely the case that it is needed).
+---------------------------------------------------------------------------------------------------------------------
+
+REDIFINING BASE CLASS METHOD -
+    - Derived class can directly invoke Base class methods ( only non private )
+    - Derived class can override or redefine Base class methods.
+    - Very powerful in the context of polymorphism.
+    
+    class Account{
+    private:
+        double balance;
+    public:
+        void deposit(doulbe amount){ balance = amount; }
+        // other code
+    };
+    class Savings_Account: public Account {
+    public:
+        void deposit(double amount){ // redifine Base class method
+        amount += some_val; // some value specific to implementation of Derived class
+        // expressions and statements specific to Derived class
+        Account::deposit(amount);
+        // calls base class method with modified amount
+        }
+    };
+    
+    Base b;
+    b.deposit(100.0);       // Base::deposit
+    Derived d;
+    d.deposit(100.0);       // Derived::deposit
+    Base* ptr = new Derived(); // Derived is a Base, hence allowed
+    ptr->deposit(1000.0); // Base::deposit since all that compiler sees is
+    // ptr is a pointer to a `Base` object
+---------------------------------------------------------------------------------------------------------------------
+
+STATIC BINDING OF METHOD CALLS
+    - Binding of which method to use is done at compile time. ( meaning of static binding of method calls )
+    - Default binding for C++ is static.
+    - Derived class objects will use Derived::deposit
+    - But we can explicitly invoke Base::deposit from Derived class.
+    - OK, but limited - much more powerful approach is dynamic binding.
+---------------------------------------------------------------------------------------------------------------------
+
+MULTIPLE INHERITANCE -
+    - A derived class inherits from two or more base classes at the same time.
+    - The base classes may belong to unrelated class hierarchies.
+    - e.g. A Department chair
+        - is a Faculty
+        - is a administrator
+    - C++ SYNTAX -
+        class Department_Chair: public Faculty, public Administrator {
+            // ...
+        };
+-----------------------------------------------------------------------------------------------------------------------
+
+POLYMORPHISM -
